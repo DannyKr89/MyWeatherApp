@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".view.WeatherMainFragment">
+    tools:context=".view.WeatherListFragment">
 
     <TextView
         android:id="@+id/cityName"
         android:layout_width="match_parent"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="30sp"
+        android:textSize="@dimen/cityName32"
         android:layout_height="wrap_content"/>
 
     <TextView
@@ -35,10 +35,4 @@
         android:gravity="center"
         android:layout_height="wrap_content"/>
 
-    <Button
-        android:id="@+id/btn"
-        android:text="смена города"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 </LinearLayout>

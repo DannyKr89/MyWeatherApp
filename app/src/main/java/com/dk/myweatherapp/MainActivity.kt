@@ -1,11 +1,9 @@
 package com.dk.myweatherapp
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.dk.myweatherapp.databinding.ActivityMainBinding
-import com.dk.myweatherapp.view.WeatherMainFragment
-import com.dk.myweatherapp.view.WeatherViewModel
+import com.dk.myweatherapp.view.WeatherListFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null){
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.mainContainer, WeatherMainFragment.newInstance())
+                .replace(R.id.mainContainer, WeatherListFragment.newInstance())
                 .commit()
         }
     }
