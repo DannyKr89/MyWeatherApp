@@ -1,4 +1,4 @@
-package com.dk.myweatherapp
+package com.dk.myweatherapp.domain
 
 import com.dk.myweatherapp.model.Weather
 

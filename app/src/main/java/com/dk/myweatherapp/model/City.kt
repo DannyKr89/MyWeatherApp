@@ -6,4 +6,4 @@ data class City(
     val lon: Double
 )
 
-fun getDefaultCity() = City("Moscow", 55.833333, 37.616667)
+fun getDefaultCity() = City("Москва", 55.833333, 37.616667)

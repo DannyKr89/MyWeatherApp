@@ -3,13 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
-    tools:context=".WeatherMainFragment">
+    tools:context=".view.WeatherMainFragment">
 
     <TextView
         android:id="@+id/cityName"
         android:layout_width="match_parent"
         android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="30sp"
         android:layout_height="wrap_content"/>
 
     <TextView
@@ -22,6 +25,8 @@
         android:id="@+id/temperature"
         android:layout_width="match_parent"
         android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
         android:layout_height="wrap_content"/>
 
     <TextView
