@@ -1,4 +1,4 @@
-package com.dk.myweatherapp.view
+package com.dk.myweatherapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

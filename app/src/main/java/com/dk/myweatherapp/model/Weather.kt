@@ -1,10 +1,14 @@
 package com.dk.myweatherapp.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Weather(
     val city: City = getDefaultCity(),
     val temperature: Int = 5,
     val feelsLike: Int = 7
-    )
+    ): Parcelable
 
 fun getWorldCities():List<Weather>{
     return listOf(

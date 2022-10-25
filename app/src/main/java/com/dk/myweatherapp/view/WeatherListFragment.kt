@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentWeatherListBinding
 import com.dk.myweatherapp.model.Weather
+import com.dk.myweatherapp.viewmodel.WeatherViewModel
 
 class WeatherListFragment : Fragment() {
     private var _binding: FragmentWeatherListBinding? = null
@@ -17,6 +18,7 @@ class WeatherListFragment : Fragment() {
             return _binding!!
         }
     private val viewModel: WeatherViewModel by activityViewModels()
+    private lateinit var adapter: WeatherListAdapter
 
 
     override fun onCreateView(
@@ -25,11 +27,6 @@ class WeatherListFragment : Fragment() {
     ): View {
         _binding = FragmentWeatherListBinding.inflate(inflater)
         return binding.root
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = WeatherListFragment()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,13 +64,37 @@ class WeatherListFragment : Fragment() {
     }
 
     private fun renderList(weathers: List<Weather>) {
-        binding.rvWeatherList.adapter = WeatherListAdapter(weathers)
+        adapter = WeatherListAdapter(object : OnItemViewClick {
+            override fun onWeatherClick(weather: Weather) {
+                val manager = activity?.supportFragmentManager
+                if (manager != null){
+                    val bundle = Bundle()
+                    bundle.putParcelable(DetailWeatherFragment.BUNDLE,weather)
+                    manager.beginTransaction()
+                        .add(R.id.mainContainer, DetailWeatherFragment.newInstance(bundle))
+                        .addToBackStack("")
+                        .commit()
+                }
+            }
+
+        })
+        adapter.setWeatherList(weathers)
+        binding.rvWeatherList.adapter = adapter
     }
 
+    interface OnItemViewClick {
+        fun onWeatherClick(weather: Weather)
+    }
 
     override fun onDestroy() {
-        super.onDestroy()
         _binding = null
+        adapter.removeListener()
+        super.onDestroy()
     }
 
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = WeatherListFragment()
+    }
 }
