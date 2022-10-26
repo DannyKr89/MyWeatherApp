@@ -13,6 +13,7 @@ import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
 import com.google.android.material.snackbar.Snackbar
 
+@Suppress("UNUSED_EXPRESSION")
 class WeatherListFragment : Fragment() {
     private var _binding: FragmentWeatherListBinding? = null
     private val binding: FragmentWeatherListBinding
@@ -24,8 +25,7 @@ class WeatherListFragment : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentWeatherListBinding.inflate(inflater)
         return binding.root
@@ -45,16 +45,14 @@ class WeatherListFragment : Fragment() {
                         progress.visibility = View.GONE
                         fabChangeList.visibility = View.GONE
                     }
+                    binding.root.reloadSnackBar(
+                        getString(R.string.loading_error),
+                        Snackbar.LENGTH_INDEFINITE,
+                        getString(R.string.repeat)
+                    ) {
+                        locationCondition()
+                    }
 
-                    Snackbar.make(view,getString(R.string.loading_error),Snackbar.LENGTH_INDEFINITE)
-                        .setAction(getString(R.string.repeat)) {
-                            if (viewModel.getNextLocation().value!!) {
-                                viewModel.getRussiansCitiesList()
-                            } else {
-                                viewModel.getWorldCitiesList()
-                            }
-                        }
-                        .show()
                 }
                 is State.Loading -> {
                     with(binding) {
@@ -85,14 +83,17 @@ class WeatherListFragment : Fragment() {
 
         binding.fabChangeList.setOnClickListener {
             viewModel.changeLocation(viewModel.getNextLocation().value!!)
-
-            if (viewModel.getNextLocation().value!!) {
-                viewModel.getRussiansCitiesList()
-            } else {
-                viewModel.getWorldCitiesList()
-            }
+            locationCondition()
         }
 
+    }
+
+    private fun locationCondition() {
+        if (viewModel.getNextLocation().value!!) {
+            viewModel.getRussiansCitiesList()
+        } else {
+            viewModel.getWorldCitiesList()
+        }
     }
 
     private fun renderList(weathers: List<Weather>) {
@@ -120,6 +121,13 @@ class WeatherListFragment : Fragment() {
         _binding = null
         adapter.removeListener()
         super.onDestroyView()
+    }
+
+
+    private fun View.reloadSnackBar(
+        error: String, duration: Int, actionString: String, function: (v: View) -> Unit
+    ) {
+        Snackbar.make(binding.root, error, duration).setAction(actionString, function).show()
     }
 
 
