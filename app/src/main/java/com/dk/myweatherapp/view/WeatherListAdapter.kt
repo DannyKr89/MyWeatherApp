@@ -3,7 +3,6 @@ package com.dk.myweatherapp.view
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.dk.myweatherapp.databinding.ItemCityNameBinding
 import com.dk.myweatherapp.model.Weather
@@ -39,11 +38,13 @@ class WeatherListAdapter(
 
     inner class WeatherViewHolder(binding: ItemCityNameBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(weather: Weather) {
-            val binding = ItemCityNameBinding.bind(itemView.rootView)
-            binding.itemCityName.text = weather.city.name
-            binding.itemCityName.setOnClickListener {
-                onItemViewClick?.onWeatherClick(weather)
+            with(ItemCityNameBinding.bind(itemView.rootView)) {
+                itemCityName.text = weather.city.name
+                itemCityName.setOnClickListener {
+                    onItemViewClick?.onWeatherClick(weather)
+                }
             }
+
         }
     }
 

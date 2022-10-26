@@ -7,7 +7,6 @@ import com.dk.myweatherapp.model.CitiesLocation
 import com.dk.myweatherapp.model.Weather
 
 class WeatherViewModel(
-    /*private val getWeather: MutableLiveData<Weather> = MutableLiveData(),*/
     private var getWeatherList: MutableLiveData<List<Weather>> = MutableLiveData(),
     private var getNextLoc: MutableLiveData<Boolean> = MutableLiveData()
 ) : ViewModel() {

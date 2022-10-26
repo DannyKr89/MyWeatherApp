@@ -64,32 +64,30 @@ class WeatherListFragment : Fragment() {
     }
 
     private fun renderList(weathers: List<Weather>) {
-        adapter = WeatherListAdapter(object : OnItemViewClick {
+        binding.rvWeatherList.adapter = WeatherListAdapter(object : OnItemViewClick {
             override fun onWeatherClick(weather: Weather) {
-                val manager = activity?.supportFragmentManager
-                if (manager != null){
-                    val bundle = Bundle()
-                    bundle.putParcelable(DetailWeatherFragment.BUNDLE,weather)
-                    manager.beginTransaction()
-                        .add(R.id.mainContainer, DetailWeatherFragment.newInstance(bundle))
-                        .addToBackStack("")
-                        .commit()
+                activity?.apply {
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.mainContainer, DetailWeatherFragment.newInstance(Bundle().apply {
+                            putParcelable(
+                                DetailWeatherFragment.WEATHER, weather
+                            )
+                        })).addToBackStack("").commit()
                 }
             }
-
-        })
-        adapter.setWeatherList(weathers)
-        binding.rvWeatherList.adapter = adapter
+        }).also {
+            it.setWeatherList(weathers)
+        }
     }
 
     interface OnItemViewClick {
         fun onWeatherClick(weather: Weather)
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         _binding = null
         adapter.removeListener()
-        super.onDestroy()
+        super.onDestroyView()
     }
 
 

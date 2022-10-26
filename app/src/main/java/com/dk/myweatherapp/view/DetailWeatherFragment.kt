@@ -25,30 +25,31 @@ class DetailWeatherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val weather = arguments?.getParcelable<Weather>(BUNDLE)
-        if (weather != null){
-            binding.cityName.text = "Город: ${weather.city.name}"
-            binding.coordinates.text = "Координаты: ${weather.city.lat} / ${weather.city.lon}"
-            binding.temperature.text = "Температура: ${weather.temperature}"
-            binding.feelsLike.text = "Чувствуется как: ${weather.feelsLike}"
+        arguments?.let {
+            it.getParcelable<Weather>(WEATHER)?.let {
+                with(binding) {
+                    cityName.text = "Город: ${it.city.name}"
+                    coordinates.text = "Координаты: ${it.city.lat} / ${it.city.lon}"
+                    temperature.text = "Температура: ${it.temperature}"
+                    feelsLike.text = "Чувствуется как: ${it.feelsLike}"
+                }
+            }
         }
     }
 
     companion object {
 
-        const val BUNDLE = "weather"
+        const val WEATHER = "weather"
 
         @JvmStatic
-        fun newInstance(bundle: Bundle): DetailWeatherFragment {
-            val fragment = DetailWeatherFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+        fun newInstance(bundle: Bundle): DetailWeatherFragment = DetailWeatherFragment().apply {
+                arguments = bundle
+            }
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         _binding = null
+        super.onDestroyView()
     }
 }
