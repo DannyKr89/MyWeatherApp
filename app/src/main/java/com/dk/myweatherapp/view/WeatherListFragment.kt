@@ -9,7 +9,9 @@ import androidx.fragment.app.activityViewModels
 import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentWeatherListBinding
 import com.dk.myweatherapp.model.Weather
+import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class WeatherListFragment : Fragment() {
     private var _binding: FragmentWeatherListBinding? = null
@@ -36,10 +38,40 @@ class WeatherListFragment : Fragment() {
             viewModel.getRussiansCitiesList()
         }
 
-        viewModel.getWeatherList().observe(
-            viewLifecycleOwner
-        ) {
-            renderList(it)
+        viewModel.getWeatherState().observe(viewLifecycleOwner) {
+            when (it) {
+                is State.Error -> {
+                    with(binding) {
+                        progress.visibility = View.GONE
+                        fabChangeList.visibility = View.GONE
+                    }
+
+                    Snackbar.make(view,getString(R.string.loading_error),Snackbar.LENGTH_INDEFINITE)
+                        .setAction(getString(R.string.repeat), View.OnClickListener {
+                            if (viewModel.getNextLocation().value!!) {
+                                viewModel.getRussiansCitiesList()
+                            } else {
+                                viewModel.getWorldCitiesList()
+                            }
+                        })
+                        .show()
+                }
+                is State.Loading -> {
+                    with(binding) {
+                        progress.visibility = View.VISIBLE
+                        rvWeatherList.visibility = View.GONE
+                        fabChangeList.visibility = View.GONE
+                    }
+                }
+                is State.Success -> {
+                    with(binding) {
+                        progress.visibility = View.GONE
+                        rvWeatherList.visibility = View.VISIBLE
+                        fabChangeList.visibility = View.VISIBLE
+                    }
+                    renderList(it.weatherList)
+                }
+            }
         }
 
         viewModel.getNextLocation().observe(viewLifecycleOwner) {
