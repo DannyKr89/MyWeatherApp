@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.model.Weather
 
@@ -16,9 +17,8 @@ class DetailWeatherFragment : Fragment() {
         }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentDetailWeatherBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -28,10 +28,24 @@ class DetailWeatherFragment : Fragment() {
         arguments?.let {
             it.getParcelable<Weather>(WEATHER)?.let {
                 with(binding) {
-                    cityName.text = "Город: ${it.city.name}"
-                    coordinates.text = "Координаты: ${it.city.lat} / ${it.city.lon}"
-                    temperature.text = "Температура: ${it.temperature}"
-                    feelsLike.text = "Чувствуется как: ${it.feelsLike}"
+                    cityName.text = buildString {
+                        append(getString(R.string.detail_city))
+                        append(it.city.name)
+                    }
+                    coordinates.text = buildString {
+                        append(getString(R.string.detail_coordinates))
+                        append(it.city.lat)
+                        append(getString(R.string.detail_coordinates_slash))
+                        append(it.city.lon)
+                    }
+                    temperature.text = buildString {
+                        append(getString(R.string.detail_temperature))
+                        append(it.temperature)
+                    }
+                    feelsLike.text = buildString {
+                        append(getString(R.string.detail_feels_like))
+                        append(it.feelsLike)
+                    }
                 }
             }
         }

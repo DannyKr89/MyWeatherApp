@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Погода</string>
+    <string name="loading_error">Ошибка загрузки</string>
+    <string name="repeat">Повторить?</string>
+    <string name="detail_city">\"Город: \"</string>
+    <string name="detail_coordinates">\"Координаты: \"</string>
+    <string name="detail_coordinates_slash">\" / \"</string>
+    <string name="detail_temperature">\"Температура: \"</string>
+    <string name="detail_feels_like">\"Чувствуется как: \"</string>
 </resources>
