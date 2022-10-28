@@ -1,13 +1,16 @@
 package com.dk.myweatherapp.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
+import com.dk.myweatherapp.domain.getLocaleWeather
+import com.dk.myweatherapp.domain.requestWeatherDTO
 import com.dk.myweatherapp.model.Weather
+import com.dk.myweatherapp.model.weather_dto.WeatherDTO
 
 class DetailWeatherFragment : Fragment() {
     private var _binding: FragmentDetailWeatherBinding? = null
@@ -26,28 +29,58 @@ class DetailWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            it.getParcelable<Weather>(WEATHER)?.let {
-                with(binding) {
-                    cityName.text = buildString {
-                        append(getString(R.string.detail_city))
-                        append(it.city.name)
+            it.getParcelable<Weather>(WEATHER)?.let { weather ->
+                Thread {
+                    try {
+                        val weatherDTO = requestWeatherDTO(weather)
+                        requireActivity().runOnUiThread {
+                            bindWeather(weather.city.name, weatherDTO)
+                        }
+
+                    } catch (e: Exception) {
+                        Log.e("ERROR", e.toString())
+                        activity?.let {
+                            it.supportFragmentManager.popBackStack()
+                        }
                     }
-                    coordinates.text = buildString {
-                        append(getString(R.string.detail_coordinates))
-                        append(it.city.lat)
-                        append(getString(R.string.detail_coordinates_slash))
-                        append(it.city.lon)
-                    }
-                    temperature.text = buildString {
-                        append(getString(R.string.detail_temperature))
-                        append(it.temperature)
-                    }
-                    feelsLike.text = buildString {
-                        append(getString(R.string.detail_feels_like))
-                        append(it.feelsLike)
-                    }
+                }.start()
+            }
+        }
+    }
+
+    private fun bindWeather(city: String, weather: WeatherDTO) {
+        with(binding) {
+            cityName.text = city
+
+
+            coordinates.text = buildString {
+                append(weather.info.lat)
+                append(" / ")
+                append(weather.info.lon)
+            }
+            condition.text = getString(getLocaleWeather(weather.fact.condition))
+
+            temperature.text = weather.fact.temp.toString()
+            feelsLike.text = weather.fact.feelsLike.toString()
+
+            minMaxTemp.text = buildString {
+
+                for (i in weather.forecast.parts.indices) {
+                    append(getString(getLocaleWeather(weather.forecast.parts[i].partName)))
+                    append(" ")
+                    append(weather.forecast.parts[i].tempMin)
+                    append(" / ")
+                    append(weather.forecast.parts[i].tempMax)
+                    if (i != weather.forecast.parts.lastIndex) append("\n")
                 }
             }
+            humidity.text = buildString {
+                append(weather.fact.humidity.toString())
+                append("%")
+            }
+            sunrise.text = weather.forecast.sunrise
+            sunset.text = weather.forecast.sunset
+
         }
     }
 
@@ -57,7 +90,7 @@ class DetailWeatherFragment : Fragment() {
 
         @JvmStatic
         fun newInstance(bundle: Bundle): DetailWeatherFragment = DetailWeatherFragment().apply {
-                arguments = bundle
+            arguments = bundle
             }
     }
 

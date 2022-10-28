@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dk.myweatherapp.domain.RepositoryImpl
 import com.dk.myweatherapp.model.CitiesLocation
+import com.dk.myweatherapp.model.getRussianCities
 import java.lang.Thread.sleep
 
 class WeatherViewModel(
@@ -12,6 +13,7 @@ class WeatherViewModel(
 ) : ViewModel() {
     init {
         getNextLocation().value = true
+        getRequest.value = State.Success(getRussianCities())
     }
 
     private val repository = RepositoryImpl()
@@ -34,8 +36,7 @@ class WeatherViewModel(
     private fun getRequestState(location: CitiesLocation){
         getRequest.value = State.Loading
         Thread {
-            sleep(1000)
-            if ((0..5).random() == 1) {
+            if (false) {
                 getRequest.postValue(State.Error(Throwable("Ошибка загрузки")))
             }else{
                 getRequest.postValue(State.Success(repository.getWeatherList(location)))

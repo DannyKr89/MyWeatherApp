@@ -34,9 +34,6 @@ class WeatherListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState == null) {
-            viewModel.getRussiansCitiesList()
-        }
 
         viewModel.getWeatherState().observe(viewLifecycleOwner) {
             when (it) {
@@ -97,10 +94,10 @@ class WeatherListFragment : Fragment() {
     }
 
     private fun renderList(weathers: List<Weather>) {
-        binding.rvWeatherList.adapter = WeatherListAdapter(object : OnItemViewClick {
+        adapter = WeatherListAdapter(object : OnItemViewClick {
             override fun onWeatherClick(weather: Weather) {
-                activity?.apply {
-                    supportFragmentManager.beginTransaction()
+                activity?.let {
+                    it.supportFragmentManager.beginTransaction()
                         .add(R.id.mainContainer, DetailWeatherFragment.newInstance(Bundle().apply {
                             putParcelable(
                                 DetailWeatherFragment.WEATHER, weather
@@ -111,6 +108,7 @@ class WeatherListFragment : Fragment() {
         }).also {
             it.setWeatherList(weathers)
         }
+        binding.rvWeatherList.adapter = adapter
     }
 
     interface OnItemViewClick {
