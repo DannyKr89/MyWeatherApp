@@ -1,11 +1,8 @@
 package com.dk.myweatherapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.dk.myweatherapp.databinding.ActivityMainBinding
-import com.dk.myweatherapp.domain.LocaleWeatherDTO
-import com.dk.myweatherapp.domain.getLocaleWeather
 import com.dk.myweatherapp.view.WeatherListFragment
 
 class MainActivity : AppCompatActivity() {
@@ -24,4 +21,5 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
     }
+
 }

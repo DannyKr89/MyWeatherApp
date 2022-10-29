@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.domain.getLocaleWeather
 import com.dk.myweatherapp.domain.requestWeatherDTO
 import com.dk.myweatherapp.model.Weather
 import com.dk.myweatherapp.model.weather_dto.WeatherDTO
+import java.net.SocketTimeoutException
 
 class DetailWeatherFragment : Fragment() {
     private var _binding: FragmentDetailWeatherBinding? = null
@@ -33,15 +35,20 @@ class DetailWeatherFragment : Fragment() {
                 Thread {
                     try {
                         val weatherDTO = requestWeatherDTO(weather)
-                        requireActivity().runOnUiThread {
+                        activity?.runOnUiThread {
                             bindWeather(weather.city.name, weatherDTO)
                         }
-
-                    } catch (e: Exception) {
-                        Log.e("ERROR", e.toString())
-                        activity?.let {
-                            it.supportFragmentManager.popBackStack()
+                    } catch (e: SocketTimeoutException) {
+                        activity?.runOnUiThread {
+                            Toast.makeText(
+                                context,
+                                "Вышло время ожидания ответа",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
+                        Log.e("ERROR", e.toString())
+                        activity?.supportFragmentManager?.popBackStack()
+
                     }
                 }.start()
             }

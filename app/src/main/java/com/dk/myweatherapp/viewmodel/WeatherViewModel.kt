@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.dk.myweatherapp.domain.RepositoryImpl
 import com.dk.myweatherapp.model.CitiesLocation
 import com.dk.myweatherapp.model.getRussianCities
-import java.lang.Thread.sleep
 
 class WeatherViewModel(
     private var getNextLoc: MutableLiveData<Boolean> = MutableLiveData(),
