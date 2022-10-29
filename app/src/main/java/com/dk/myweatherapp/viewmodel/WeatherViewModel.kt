@@ -4,16 +4,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dk.myweatherapp.domain.RepositoryImpl
 import com.dk.myweatherapp.model.CitiesLocation
+import com.dk.myweatherapp.model.Weather
 import com.dk.myweatherapp.model.getRussianCities
-import java.lang.Thread.sleep
 
 class WeatherViewModel(
     private var getNextLoc: MutableLiveData<Boolean> = MutableLiveData(),
-    private var getRequest: MutableLiveData<State> = MutableLiveData()
+    private var getRequestWeatherList: MutableLiveData<State> = MutableLiveData(),
+    private var getRequestWeather: MutableLiveData<State> = MutableLiveData()
 ) : ViewModel() {
     init {
         getNextLocation().value = true
-        getRequest.value = State.Success(getRussianCities())
+        getRequestWeatherList.value = State.SuccessWeatherList(getRussianCities())
+        getRequestWeather.value = State.Loading
     }
 
     private val repository = RepositoryImpl()
@@ -29,27 +31,42 @@ class WeatherViewModel(
     }
 
 
-    fun getWeatherState(): MutableLiveData<State>{
-        return getRequest
+    fun getWeatherListState(): MutableLiveData<State>{
+        return getRequestWeatherList
     }
 
-    private fun getRequestState(location: CitiesLocation){
-        getRequest.value = State.Loading
+    fun getWeatherState():MutableLiveData<State>{
+        return getRequestWeather
+    }
+
+    private fun getWeatherListRequestState(location: CitiesLocation){
+        getRequestWeatherList.value = State.Loading
         Thread {
             if (false) {
-                getRequest.postValue(State.Error(Throwable("Ошибка загрузки")))
+                getRequestWeatherList.postValue(State.Error(Throwable("Ошибка загрузки")))
             }else{
-                getRequest.postValue(State.Success(repository.getWeatherList(location)))
+                getRequestWeatherList.postValue(State.SuccessWeatherList(repository.getWeatherList(location)))
+            }
+        }.start()
+    }
+
+    fun getWeatherRequestState(weather: Weather){
+        getRequestWeather.value = State.Loading
+        Thread{
+            if (false) {
+                getRequestWeather.postValue(State.Error(Throwable("Ошибка загрузки")))
+            } else{
+                getRequestWeather.postValue(State.SuccessWeather(repository.getWeather(weather)))
             }
         }.start()
     }
 
     fun getRussiansCitiesList() {
-        getRequestState(CitiesLocation.RussianCities)
+        getWeatherListRequestState(CitiesLocation.RussianCities)
     }
 
     fun getWorldCitiesList() {
-        getRequestState(CitiesLocation.WorldCities)
+        getWeatherListRequestState(CitiesLocation.WorldCities)
     }
 
 }

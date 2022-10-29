@@ -1,16 +1,18 @@
 package com.dk.myweatherapp.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.domain.getLocaleWeather
-import com.dk.myweatherapp.domain.requestWeatherDTO
 import com.dk.myweatherapp.model.Weather
 import com.dk.myweatherapp.model.weather_dto.WeatherDTO
+import com.dk.myweatherapp.viewmodel.State
+import com.dk.myweatherapp.viewmodel.WeatherViewModel
 
 class DetailWeatherFragment : Fragment() {
     private var _binding: FragmentDetailWeatherBinding? = null
@@ -18,6 +20,8 @@ class DetailWeatherFragment : Fragment() {
         get() {
             return _binding!!
         }
+    private val viewModel: WeatherViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -28,24 +32,62 @@ class DetailWeatherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arguments?.let {
-            it.getParcelable<Weather>(WEATHER)?.let { weather ->
-                Thread {
-                    try {
-                        val weatherDTO = requestWeatherDTO(weather)
-                        requireActivity().runOnUiThread {
-                            bindWeather(weather.city.name, weatherDTO)
-                        }
+//        arguments?.let {
+//            it.getParcelable<Weather>(WEATHER)?.let { weather ->
+//                Thread {
+//                    try {
+//                        val weatherDTO = requestWeatherDTO(weather)
+//                        activity?.runOnUiThread {
+//                            bindWeather(weather.city.name, weatherDTO)
+//                        }
+//                    } catch (e: SocketTimeoutException) {
+//                        activity?.runOnUiThread {
+//                            Toast.makeText(
+//                                context,
+//                                "Вышло время ожидания ответа",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//                        }
+//                        Log.e("ERROR", e.toString())
+//                        activity?.supportFragmentManager?.popBackStack()
+//
+//                    }
+//                }.start()
+//
+//            }
+//        }
+        val weather = arguments?.getParcelable<Weather>(WEATHER)!!
 
-                    } catch (e: Exception) {
-                        Log.e("ERROR", e.toString())
-                        activity?.let {
-                            it.supportFragmentManager.popBackStack()
-                        }
+        viewModel.getWeatherState().observe(viewLifecycleOwner) {
+            when (it) {
+                is State.Error -> {
+                    Toast.makeText(
+                        context, "Вышло время ожидания ответа", Toast.LENGTH_LONG
+                    ).show()
+                }
+                State.Loading -> {
+                    with(binding) {
+                        progressbarDetail.visibility = View.VISIBLE
+                        listViewWeather.visibility = View.GONE
+
                     }
-                }.start()
+
+                }
+                is State.SuccessWeather -> {
+                    with(binding) {
+                        progressbarDetail.visibility = View.GONE
+                        listViewWeather.visibility = View.VISIBLE
+
+                    }
+
+                    bindWeather(weather.city.name, it.weather)
+                }
+                is State.SuccessWeatherList -> {}
             }
         }
+        viewModel.getWeatherRequestState(weather)
+
+
     }
 
     private fun bindWeather(city: String, weather: WeatherDTO) {
