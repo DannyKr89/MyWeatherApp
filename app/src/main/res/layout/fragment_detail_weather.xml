@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".view.WeatherListFragment">
+    tools:context=".view.DetailWeatherFragment">
 
     <ImageView
         android:layout_width="match_parent"

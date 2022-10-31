@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.domain.getLocaleWeather
 import com.dk.myweatherapp.model.Weather
@@ -32,54 +34,23 @@ class DetailWeatherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        arguments?.let {
-//            it.getParcelable<Weather>(WEATHER)?.let { weather ->
-//                Thread {
-//                    try {
-//                        val weatherDTO = requestWeatherDTO(weather)
-//                        activity?.runOnUiThread {
-//                            bindWeather(weather.city.name, weatherDTO)
-//                        }
-//                    } catch (e: SocketTimeoutException) {
-//                        activity?.runOnUiThread {
-//                            Toast.makeText(
-//                                context,
-//                                "Вышло время ожидания ответа",
-//                                Toast.LENGTH_LONG
-//                            ).show()
-//                        }
-//                        Log.e("ERROR", e.toString())
-//                        activity?.supportFragmentManager?.popBackStack()
-//
-//                    }
-//                }.start()
-//
-//            }
-//        }
+
         val weather = arguments?.getParcelable<Weather>(WEATHER)!!
 
         viewModel.getWeatherState().observe(viewLifecycleOwner) {
             when (it) {
                 is State.Error -> {
+                    hideProgressbar()
+                    findNavController().navigate(R.id.action_detailWeatherFragment_to_weatherListFragment)
                     Toast.makeText(
-                        context, "Вышло время ожидания ответа", Toast.LENGTH_LONG
+                        context, "Ошибка", Toast.LENGTH_LONG
                     ).show()
                 }
                 State.Loading -> {
-                    with(binding) {
-                        progressbarDetail.visibility = View.VISIBLE
-                        listViewWeather.visibility = View.GONE
-
-                    }
-
+                    showProgressbar()
                 }
                 is State.SuccessWeather -> {
-                    with(binding) {
-                        progressbarDetail.visibility = View.GONE
-                        listViewWeather.visibility = View.VISIBLE
-
-                    }
-
+                    hideProgressbar()
                     bindWeather(weather.city.name, it.weather)
                 }
                 is State.SuccessWeatherList -> {}
@@ -88,6 +59,20 @@ class DetailWeatherFragment : Fragment() {
         viewModel.getWeatherRequestState(weather)
 
 
+    }
+
+    private fun hideProgressbar() {
+        with(binding) {
+            progressbarDetail.visibility = View.GONE
+            listViewWeather.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showProgressbar() {
+        with(binding) {
+            progressbarDetail.visibility = View.VISIBLE
+            listViewWeather.visibility = View.GONE
+        }
     }
 
     private fun bindWeather(city: String, weather: WeatherDTO) {
@@ -130,12 +115,7 @@ class DetailWeatherFragment : Fragment() {
 
         const val WEATHER = "weather"
 
-        @JvmStatic
-        fun newInstance(bundle: Bundle): DetailWeatherFragment = DetailWeatherFragment().apply {
-            arguments = bundle
-            }
     }
-
 
     override fun onDestroyView() {
         _binding = null

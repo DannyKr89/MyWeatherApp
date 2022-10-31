@@ -5,27 +5,15 @@ import com.google.gson.annotations.SerializedName
 
 data class Fact(
     @SerializedName("condition")
-    val condition: String,
-    @SerializedName("daytime")
-    val daytime: String,
+    val condition: String = "N/A",
     @SerializedName("feels_like")
-    val feelsLike: Int,
+    val feelsLike: Int = 0,
     @SerializedName("humidity")
-    val humidity: Int,
+    val humidity: Int = 0,
     @SerializedName("icon")
-    val icon: String,
-    @SerializedName("pressure_mm")
-    val pressureMm: Int,
-    @SerializedName("pressure_pa")
-    val pressurePa: Int,
-    @SerializedName("season")
-    val season: String,
+    val icon: String = "", // TODO Добавить картинки
     @SerializedName("temp")
-    val temp: Int,
-    @SerializedName("wind_dir")
-    val windDir: String,
-    @SerializedName("wind_gust")
-    val windGust: Double,
+    val temp: Int = 0,
     @SerializedName("wind_speed")
-    val windSpeed: Double
+    val windSpeed: Double = 0.0 //TODO Добавить скорость ветра
 )

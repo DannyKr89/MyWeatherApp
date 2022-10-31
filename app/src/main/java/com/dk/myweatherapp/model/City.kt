@@ -5,9 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class City(
-    val name:String,
-    val lat: Double,
-    val lon: Double
+    val name:String = "N/A",
+    val lat: Double = 0.0,
+    val lon: Double = 0.0
 ) : Parcelable
-
-fun getDefaultCity() = City("Москва", 55.833333, 37.616667)
