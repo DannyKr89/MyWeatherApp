@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentWeatherListBinding
 import com.dk.myweatherapp.model.Weather
@@ -34,41 +35,30 @@ class WeatherListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState == null) {
-            viewModel.getRussiansCitiesList()
-        }
+        findNavController()
 
-        viewModel.getWeatherState().observe(viewLifecycleOwner) {
+
+        viewModel.getWeatherListState().observe(viewLifecycleOwner) {
             when (it) {
                 is State.Error -> {
-                    with(binding) {
-                        progress.visibility = View.GONE
-                        fabChangeList.visibility = View.GONE
-                    }
-                    binding.root.reloadSnackBar(
+                    hideProgressbar()
+                    binding.root.ReloadSnackBar(
                         getString(R.string.loading_error),
                         Snackbar.LENGTH_INDEFINITE,
                         getString(R.string.repeat)
                     ) {
                         locationCondition()
-                    }
+                    }.show()
 
                 }
                 is State.Loading -> {
-                    with(binding) {
-                        progress.visibility = View.VISIBLE
-                        rvWeatherList.visibility = View.GONE
-                        fabChangeList.visibility = View.GONE
-                    }
+                    showProgressbar()
                 }
-                is State.Success -> {
-                    with(binding) {
-                        progress.visibility = View.GONE
-                        rvWeatherList.visibility = View.VISIBLE
-                        fabChangeList.visibility = View.VISIBLE
-                    }
+                is State.SuccessWeatherList -> {
+                    hideProgressbar()
                     renderList(it.weatherList)
                 }
+                is State.SuccessWeather -> {}
             }
         }
 
@@ -88,6 +78,22 @@ class WeatherListFragment : Fragment() {
 
     }
 
+    private fun showProgressbar() {
+        with(binding) {
+            progress.visibility = View.VISIBLE
+            rvWeatherList.visibility = View.GONE
+            fabChangeList.visibility = View.GONE
+        }
+    }
+
+    private fun hideProgressbar() {
+        with(binding) {
+            progress.visibility = View.GONE
+            rvWeatherList.visibility = View.VISIBLE
+            fabChangeList.visibility = View.VISIBLE
+        }
+    }
+
     private fun locationCondition() {
         if (viewModel.getNextLocation().value!!) {
             viewModel.getRussiansCitiesList()
@@ -97,20 +103,19 @@ class WeatherListFragment : Fragment() {
     }
 
     private fun renderList(weathers: List<Weather>) {
-        binding.rvWeatherList.adapter = WeatherListAdapter(object : OnItemViewClick {
+        adapter = WeatherListAdapter(object : OnItemViewClick {
             override fun onWeatherClick(weather: Weather) {
-                activity?.apply {
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.mainContainer, DetailWeatherFragment.newInstance(Bundle().apply {
-                            putParcelable(
-                                DetailWeatherFragment.WEATHER, weather
-                            )
-                        })).addToBackStack("").commit()
-                }
+                findNavController().navigate(R.id.action_weatherListFragment_to_detailWeatherFragment,
+                    Bundle().apply {
+                        putParcelable(
+                            DetailWeatherFragment.WEATHER, weather
+                        )
+                    })
             }
         }).also {
             it.setWeatherList(weathers)
         }
+        binding.rvWeatherList.adapter = adapter
     }
 
     interface OnItemViewClick {
@@ -124,15 +129,10 @@ class WeatherListFragment : Fragment() {
     }
 
 
-    private fun View.reloadSnackBar(
+    private fun View.ReloadSnackBar(
         error: String, duration: Int, actionString: String, function: (v: View) -> Unit
-    ) {
-        Snackbar.make(binding.root, error, duration).setAction(actionString, function).show()
-    }
-
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = WeatherListFragment()
+    ): Snackbar {
+        return Snackbar.make(binding.root, error, duration).setAction(actionString, function)
     }
 }
+

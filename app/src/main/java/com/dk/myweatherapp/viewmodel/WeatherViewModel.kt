@@ -4,14 +4,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dk.myweatherapp.domain.RepositoryImpl
 import com.dk.myweatherapp.model.CitiesLocation
-import java.lang.Thread.sleep
+import com.dk.myweatherapp.model.Weather
+import com.dk.myweatherapp.model.getRussianCities
+import com.dk.myweatherapp.model.weather_dto.WeatherDTO
 
 class WeatherViewModel(
     private var getNextLoc: MutableLiveData<Boolean> = MutableLiveData(),
-    private var getRequest: MutableLiveData<State> = MutableLiveData()
+    private var getRequestWeatherList: MutableLiveData<State> = MutableLiveData(),
+    private var getRequestWeather: MutableLiveData<State> = MutableLiveData()
 ) : ViewModel() {
     init {
         getNextLocation().value = true
+        getRequestWeatherList.value = State.SuccessWeatherList(getRussianCities())
+        getRequestWeather.value = State.Loading
     }
 
     private val repository = RepositoryImpl()
@@ -27,28 +32,43 @@ class WeatherViewModel(
     }
 
 
-    fun getWeatherState(): MutableLiveData<State>{
-        return getRequest
+    fun getWeatherListState(): MutableLiveData<State>{
+        return getRequestWeatherList
     }
 
-    private fun getRequestState(location: CitiesLocation){
-        getRequest.value = State.Loading
+    fun getWeatherState():MutableLiveData<State>{
+        return getRequestWeather
+    }
+
+    private fun getWeatherListRequestState(location: CitiesLocation){
+        getRequestWeatherList.value = State.Loading
         Thread {
-            sleep(1000)
-            if ((0..5).random() == 1) {
-                getRequest.postValue(State.Error(Throwable("Ошибка загрузки")))
+            if (false) {
+                getRequestWeatherList.postValue(State.Error(Throwable("Ошибка загрузки")))
             }else{
-                getRequest.postValue(State.Success(repository.getWeatherList(location)))
+                getRequestWeatherList.postValue(State.SuccessWeatherList(repository.getWeatherList(location)))
+            }
+        }.start()
+    }
+
+    fun getWeatherRequestState(weather: Weather){
+        getRequestWeather.value = State.Loading
+        Thread{
+            val getWeather = repository.getWeather(weather)
+            if (getWeather.equals(WeatherDTO())) {
+                getRequestWeather.postValue(State.Error(Throwable("Ошибка загрузки")))
+            } else{
+                getRequestWeather.postValue(State.SuccessWeather(getWeather))
             }
         }.start()
     }
 
     fun getRussiansCitiesList() {
-        getRequestState(CitiesLocation.RussianCities)
+        getWeatherListRequestState(CitiesLocation.RussianCities)
     }
 
     fun getWorldCitiesList() {
-        getRequestState(CitiesLocation.WorldCities)
+        getWeatherListRequestState(CitiesLocation.WorldCities)
     }
 
 }

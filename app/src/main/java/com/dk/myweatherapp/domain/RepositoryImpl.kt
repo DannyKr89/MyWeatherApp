@@ -4,11 +4,10 @@ import com.dk.myweatherapp.model.CitiesLocation
 import com.dk.myweatherapp.model.Weather
 import com.dk.myweatherapp.model.getRussianCities
 import com.dk.myweatherapp.model.getWorldCities
+import com.dk.myweatherapp.model.weather_dto.WeatherDTO
 
-class RepositoryImpl : RepositoryWeatherSingleCity, RepositoryWeatherListCities, RepositoryNextLoc {
-    override fun getWeather(weather: Weather): Weather {
-        return weather
-    }
+class RepositoryImpl : RepositoryWeatherListCities, RepositoryNextLoc, RepositoryWeather {
+
 
     override fun getWeatherList(location: CitiesLocation): List<Weather> {
         return when (location) {
@@ -23,6 +22,10 @@ class RepositoryImpl : RepositoryWeatherSingleCity, RepositoryWeatherListCities,
 
     override fun getNextLoc(nextLoc: Boolean): Boolean {
         return !nextLoc
+    }
+
+    override fun getWeather(weather: Weather): WeatherDTO {
+        return requestWeatherDTO(weather)
     }
 }
 
