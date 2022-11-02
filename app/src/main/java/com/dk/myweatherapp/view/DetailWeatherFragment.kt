@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.domain.getLocaleWeather
+import com.dk.myweatherapp.domain.getWeatherConditionIcon
 import com.dk.myweatherapp.model.Weather
 import com.dk.myweatherapp.model.weather_dto.WeatherDTO
 import com.dk.myweatherapp.viewmodel.State
@@ -37,11 +36,12 @@ class DetailWeatherFragment : Fragment() {
 
         val weather = arguments?.getParcelable<Weather>(WEATHER)!!
 
+
+
         viewModel.getWeatherState().observe(viewLifecycleOwner) {
             when (it) {
                 is State.Error -> {
                     hideProgressbar()
-                    findNavController().navigate(R.id.action_detailWeatherFragment_to_weatherListFragment)
                     Toast.makeText(
                         context, "Ошибка", Toast.LENGTH_LONG
                     ).show()
@@ -51,7 +51,7 @@ class DetailWeatherFragment : Fragment() {
                 }
                 is State.SuccessWeather -> {
                     hideProgressbar()
-                    bindWeather(weather.city.name, it.weather)
+                    bindWeather(it.weather)
                 }
                 is State.SuccessWeatherList -> {}
             }
@@ -75,23 +75,23 @@ class DetailWeatherFragment : Fragment() {
         }
     }
 
-    private fun bindWeather(city: String, weather: WeatherDTO) {
+    private fun bindWeather(weather: WeatherDTO) {
         with(binding) {
-            cityName.text = city
 
-
-            coordinates.text = buildString {
-                append(weather.info.lat)
-                append(" / ")
-                append(weather.info.lon)
-            }
             condition.text = getString(getLocaleWeather(weather.fact.condition))
 
-            temperature.text = weather.fact.temp.toString()
-            feelsLike.text = weather.fact.feelsLike.toString()
+            weatherIcon.setImageResource(getWeatherConditionIcon(weather.fact.condition))
+
+            temperature.text = buildString {
+                append(weather.fact.temp.toString())
+                append("°C")
+            }
+            feelsLike.text = buildString {
+                append(weather.fact.feelsLike.toString())
+                append("°C")
+            }
 
             minMaxTemp.text = buildString {
-
                 for (i in weather.forecast.parts.indices) {
                     append(getString(getLocaleWeather(weather.forecast.parts[i].partName)))
                     append(" ")
@@ -112,13 +112,13 @@ class DetailWeatherFragment : Fragment() {
     }
 
     companion object {
-
         const val WEATHER = "weather"
-
     }
+
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
+
 }

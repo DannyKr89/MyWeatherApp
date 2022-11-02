@@ -13,6 +13,7 @@ import com.dk.myweatherapp.model.Weather
 import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_detail_weather.*
 
 @Suppress("UNUSED_EXPRESSION")
 class WeatherListFragment : Fragment() {
@@ -34,8 +35,6 @@ class WeatherListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        findNavController()
 
 
         viewModel.getWeatherListState().observe(viewLifecycleOwner) {
@@ -110,6 +109,7 @@ class WeatherListFragment : Fragment() {
                         putParcelable(
                             DetailWeatherFragment.WEATHER, weather
                         )
+                        putString("cityName",weather.city.name)
                     })
             }
         }).also {

@@ -3,13 +3,8 @@
     <string name="loading_error">Ошибка загрузки</string>
     <string name="repeat">Повторить?</string>
 
-    <string name="detail_city">Город:</string>
-    <string name="detail_coordinates">Координаты:</string>
-    <string name="detail_temperature">Температура:</string>
     <string name="detail_feels_like">Чувствуется как:</string>
     <string name="detail_humidity">Влажность:</string>
-    <string name="detail_sunrise">Восход:</string>
-    <string name="detail_sunset">Закат</string>
     <string name="detail_min_max_temp">Мин/Макс температура</string>
 
     <string name="n_a">n/a</string>
@@ -37,6 +32,4 @@
     <string name="day">День</string>
     <string name="morning">Утро</string>
     <string name="evening">Вечер</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
