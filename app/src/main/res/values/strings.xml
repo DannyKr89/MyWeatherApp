@@ -32,4 +32,6 @@
     <string name="day">День</string>
     <string name="morning">Утро</string>
     <string name="evening">Вечер</string>
+    <string name="longitude">Долгота</string>
+    <string name="latitude">Широта</string>
 </resources>
