@@ -3,4 +3,5 @@
     <dimen name="largeSize32">32sp</dimen>
     <dimen name="margin16">16dp</dimen>
     <dimen name="mediumSize20">20sp</dimen>
+    <dimen name="padding8">8dp</dimen>
 </resources>

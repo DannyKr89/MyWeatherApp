@@ -24,7 +24,8 @@ class WeatherListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
-        val binding = ItemCityNameBinding.inflate(LayoutInflater.from(parent.context))
+        val binding =
+            ItemCityNameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return WeatherViewHolder(binding)
     }
 
@@ -36,7 +37,8 @@ class WeatherListAdapter(
         return weatherList.size
     }
 
-    inner class WeatherViewHolder(binding: ItemCityNameBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class WeatherViewHolder(binding: ItemCityNameBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(weather: Weather) {
             with(ItemCityNameBinding.bind(itemView.rootView)) {
                 itemCityName.text = weather.city.name

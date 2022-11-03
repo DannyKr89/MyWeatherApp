@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
+    android:layout_gravity="center"
     tools:context=".view.DetailWeatherFragment">
 
     <ImageView
@@ -40,22 +41,21 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:cardBackgroundColor="@color/white"
+            app:cardBackgroundColor="@color/whiteAlpha"
             app:cardCornerRadius="@dimen/mediumSize20"
-            app:cardElevation="8dp"
+            app:cardElevation="0dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="32dp">
 
                 <ImageView
                     android:id="@+id/weatherIcon"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
                     android:layout_gravity="center"
                     android:src="@drawable/drizzle" />
 
@@ -96,7 +96,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="@string/detail_feels_like"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/dark_cyan" />
 
                         <TextView
                             android:id="@+id/feelsLike"
@@ -121,7 +121,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="@string/detail_humidity"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/dark_cyan" />
 
                         <TextView
                             android:id="@+id/humidity"
@@ -135,6 +135,11 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/light_cyan" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -190,12 +195,17 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/light_cyan"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/detail_min_max_temp"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/dark_cyan"
                     android:textSize="@dimen/mediumSize20" />
 
                 <TextView

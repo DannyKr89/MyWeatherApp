@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentWeatherListBinding
+import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.Weather
 import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
@@ -75,6 +77,33 @@ class WeatherListFragment : Fragment() {
             locationCondition()
         }
 
+        with(binding) {
+            btnSearch.setOnClickListener {
+                if (latitude.text != null || longitude.text != null) {
+                    val weather = Weather(
+                        City(
+                            "Свои координаты",
+                            latitude.text.toString().toDouble(),
+                            longitude.text.toString().toDouble()
+                        )
+                    )
+                    findNavController().navigate(R.id.action_weatherListFragment_to_detailWeatherFragment,
+                        Bundle().apply {
+                            putParcelable(
+                                DetailWeatherFragment.WEATHER, weather
+                            )
+                            putString("cityName", weather.city.name)
+                        })
+                } else {
+                    Toast.makeText(
+                        super.getContext(),
+                        "Введите широту и долготу",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
     }
 
     private fun showProgressbar() {
@@ -109,7 +138,7 @@ class WeatherListFragment : Fragment() {
                         putParcelable(
                             DetailWeatherFragment.WEATHER, weather
                         )
-                        putString("cityName",weather.city.name)
+                        putString("cityName", weather.city.name)
                     })
             }
         }).also {
