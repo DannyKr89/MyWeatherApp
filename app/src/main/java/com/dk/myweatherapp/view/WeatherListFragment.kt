@@ -79,7 +79,7 @@ class WeatherListFragment : Fragment() {
 
         with(binding) {
             btnSearch.setOnClickListener {
-                if (latitude.text != null || longitude.text != null) {
+                if (latitude.text.isNotEmpty() && longitude.text.isNotEmpty()) {
                     val weather = Weather(
                         City(
                             "Свои координаты",
