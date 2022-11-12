@@ -14,18 +14,15 @@
             app:destination="@id/detailWeatherFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/weatherListFragment"
             app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/detailWeatherFragment"
         android:name="com.dk.myweatherapp.view.DetailWeatherFragment"
         android:label="{cityName}"
-        tools:layout="@layout/fragment_detail_weather">
-        <action
-            android:id="@+id/action_detailWeatherFragment_to_weatherListFragment"
-            app:destination="@id/weatherListFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/weatherListFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_detail_weather"/>
 </navigation>
