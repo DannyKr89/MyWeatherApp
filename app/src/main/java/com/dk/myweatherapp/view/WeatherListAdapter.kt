@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dk.myweatherapp.databinding.ItemCityNameBinding
-import com.dk.myweatherapp.model.Weather
+import com.dk.myweatherapp.model.City
 
 class WeatherListAdapter(
     private var onItemViewClick: WeatherListFragment.OnItemViewClick?) :
     RecyclerView.Adapter<WeatherListAdapter.WeatherViewHolder>() {
 
-    private var weatherList = listOf<Weather>()
+    private var weatherList = listOf<City>()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWeatherList(list:List<Weather>){
+    fun setWeatherList(list:List<City>){
         weatherList = list
         notifyDataSetChanged()
     }
@@ -39,11 +39,11 @@ class WeatherListAdapter(
 
     inner class WeatherViewHolder(binding: ItemCityNameBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(weather: Weather) {
+        fun bind(city: City) {
             with(ItemCityNameBinding.bind(itemView.rootView)) {
-                itemCityName.text = weather.city.name
+                itemCityName.text = city.name
                 itemCityName.setOnClickListener {
-                    onItemViewClick?.onWeatherClick(weather)
+                    onItemViewClick?.onWeatherClick(city)
                 }
             }
 

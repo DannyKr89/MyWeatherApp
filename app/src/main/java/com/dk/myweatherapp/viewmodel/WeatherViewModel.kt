@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dk.myweatherapp.domain.RepositoryImpl
 import com.dk.myweatherapp.model.CitiesLocation
-import com.dk.myweatherapp.model.Weather
+import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.getRussianCities
 import com.dk.myweatherapp.model.weather_dto.WeatherDTO
 
@@ -51,10 +51,10 @@ class WeatherViewModel(
         }.start()
     }
 
-    fun getWeatherRequestState(weather: Weather){
+    fun getWeatherRequestState(city: City){
         getRequestWeather.value = State.Loading
         Thread{
-            val getWeather = repository.getWeather(weather)
+            val getWeather = repository.getWeather(city)
             if (getWeather.equals(WeatherDTO())) {
                 getRequestWeather.postValue(State.Error(Throwable("Ошибка загрузки")))
             } else{

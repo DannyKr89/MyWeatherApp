@@ -1,7 +1,7 @@
 package com.dk.myweatherapp.domain
 
 import com.dk.myweatherapp.model.CitiesLocation
-import com.dk.myweatherapp.model.Weather
+import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.getRussianCities
 import com.dk.myweatherapp.model.getWorldCities
 import com.dk.myweatherapp.model.weather_dto.WeatherDTO
@@ -9,7 +9,7 @@ import com.dk.myweatherapp.model.weather_dto.WeatherDTO
 class RepositoryImpl : RepositoryWeatherListCities, RepositoryNextLoc, RepositoryWeather {
 
 
-    override fun getWeatherList(location: CitiesLocation): List<Weather> {
+    override fun getWeatherList(location: CitiesLocation): List<City> {
         return when (location) {
             CitiesLocation.RussianCities -> {
                 getRussianCities()
@@ -24,8 +24,8 @@ class RepositoryImpl : RepositoryWeatherListCities, RepositoryNextLoc, Repositor
         return !nextLoc
     }
 
-    override fun getWeather(weather: Weather): WeatherDTO {
-        return requestWeatherDTO(weather)
+    override fun getWeather(city: City): WeatherDTO {
+        return requestWeatherDTO(city)
     }
 }
 

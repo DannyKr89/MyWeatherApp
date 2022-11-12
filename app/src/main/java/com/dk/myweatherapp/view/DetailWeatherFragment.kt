@@ -10,7 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.domain.getLocaleWeather
 import com.dk.myweatherapp.domain.getWeatherConditionIcon
-import com.dk.myweatherapp.model.Weather
+import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.weather_dto.WeatherDTO
 import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
@@ -34,7 +34,7 @@ class DetailWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val weather = arguments?.getParcelable<Weather>(WEATHER)!!
+        val weather = arguments?.getParcelable<City>(CITY)!!
 
 
 
@@ -112,7 +112,7 @@ class DetailWeatherFragment : Fragment() {
     }
 
     companion object {
-        const val WEATHER = "weather"
+        const val CITY = "city"
     }
 
 

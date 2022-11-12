@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.FragmentWeatherListBinding
 import com.dk.myweatherapp.model.City
-import com.dk.myweatherapp.model.Weather
 import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -80,19 +79,17 @@ class WeatherListFragment : Fragment() {
         with(binding) {
             btnSearch.setOnClickListener {
                 if (latitude.text.isNotEmpty() && longitude.text.isNotEmpty()) {
-                    val weather = Weather(
-                        City(
+                    val city = City(
                             "Свои координаты",
                             latitude.text.toString().toDouble(),
                             longitude.text.toString().toDouble()
                         )
-                    )
                     findNavController().navigate(R.id.action_weatherListFragment_to_detailWeatherFragment,
                         Bundle().apply {
                             putParcelable(
-                                DetailWeatherFragment.WEATHER, weather
+                                DetailWeatherFragment.CITY, city
                             )
-                            putString("cityName", weather.city.name)
+                            putString("cityName", city.name)
                         })
                 } else {
                     Toast.makeText(
@@ -130,15 +127,15 @@ class WeatherListFragment : Fragment() {
         }
     }
 
-    private fun renderList(weathers: List<Weather>) {
+    private fun renderList(weathers: List<City>) {
         adapter = WeatherListAdapter(object : OnItemViewClick {
-            override fun onWeatherClick(weather: Weather) {
+            override fun onWeatherClick(city: City) {
                 findNavController().navigate(R.id.action_weatherListFragment_to_detailWeatherFragment,
                     Bundle().apply {
                         putParcelable(
-                            DetailWeatherFragment.WEATHER, weather
+                            DetailWeatherFragment.CITY, city
                         )
-                        putString("cityName", weather.city.name)
+                        putString("cityName", city.name)
                     })
             }
         }).also {
@@ -148,7 +145,7 @@ class WeatherListFragment : Fragment() {
     }
 
     interface OnItemViewClick {
-        fun onWeatherClick(weather: Weather)
+        fun onWeatherClick(city: City)
     }
 
     override fun onDestroyView() {
