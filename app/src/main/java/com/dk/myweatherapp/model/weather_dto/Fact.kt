@@ -1,8 +1,11 @@
 package com.dk.myweatherapp.model.weather_dto
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Fact(
     @SerializedName("condition")
     val condition: String = "N/A",
@@ -16,4 +19,4 @@ data class Fact(
     val temp: Int = 0,
     @SerializedName("wind_speed")
     val windSpeed: Double = 0.0 //TODO Добавить скорость ветра
-)
+): Parcelable

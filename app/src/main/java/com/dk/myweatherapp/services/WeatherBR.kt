@@ -1,4 +1,4 @@
-package com.dk.myweatherapp
+package com.dk.myweatherapp.services
 
 import android.content.BroadcastReceiver
 import android.content.Context

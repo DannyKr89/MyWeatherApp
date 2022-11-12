@@ -8,6 +8,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.dk.myweatherapp.databinding.ActivityMainBinding
+import com.dk.myweatherapp.services.WeatherBR
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController
     private val receiver = WeatherBR()
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)

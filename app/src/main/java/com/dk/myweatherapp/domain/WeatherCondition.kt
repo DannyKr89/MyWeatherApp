@@ -80,7 +80,7 @@ fun getWeatherConditionIcon(condition: String): Int {
         WeatherCondition.THUNDERSTORM.condition -> R.drawable.thunderstorm
         WeatherCondition.THUNDERSTORM_WITH_RAIN.condition ->R.drawable.thunderstorm_with_rain
         WeatherCondition.THUNDERSTORM_WITH_HAIL.condition ->R.drawable.thunderstorm_with_hail
-        else -> {R.string.n_a}
+        else -> {R.drawable.n_a}
     }
 
 }

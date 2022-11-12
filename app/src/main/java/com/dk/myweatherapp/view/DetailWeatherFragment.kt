@@ -1,19 +1,22 @@
 package com.dk.myweatherapp.view
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.domain.getLocaleWeather
 import com.dk.myweatherapp.domain.getWeatherConditionIcon
 import com.dk.myweatherapp.model.City
-import com.dk.myweatherapp.model.weather_dto.WeatherDTO
-import com.dk.myweatherapp.viewmodel.State
-import com.dk.myweatherapp.viewmodel.WeatherViewModel
+import com.dk.myweatherapp.model.weather_dto.Weather
+import com.dk.myweatherapp.services.DetailWeatherService
 
 class DetailWeatherFragment : Fragment() {
     private var _binding: FragmentDetailWeatherBinding? = null
@@ -21,8 +24,31 @@ class DetailWeatherFragment : Fragment() {
         get() {
             return _binding!!
         }
-    private val viewModel: WeatherViewModel by activityViewModels()
+    private lateinit var cityBundle: City
+    private val loadWeatherReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.getStringExtra(LOAD_RESULT)) {
+                ERROR -> {
+                    Toast.makeText(requireContext(), "Ошибка загрузки!", Toast.LENGTH_SHORT).show()
+                    val weather = intent.getParcelableExtra<Weather>(WEATHER)!!
+                    bindWeather(weather)
+                }
+                SUCCESS -> {
+                    val weather = intent.getParcelableExtra<Weather>(WEATHER)!!
+                    bindWeather(weather)
+                }
+            }
 
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            LocalBroadcastManager.getInstance(it)
+                .registerReceiver(loadWeatherReceiver, IntentFilter(WEATHER))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -33,55 +59,24 @@ class DetailWeatherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val weather = arguments?.getParcelable<City>(CITY)!!
-
-
-
-        viewModel.getWeatherState().observe(viewLifecycleOwner) {
-            when (it) {
-                is State.Error -> {
-                    hideProgressbar()
-                    Toast.makeText(
-                        context, "Ошибка", Toast.LENGTH_LONG
-                    ).show()
-                }
-                State.Loading -> {
-                    showProgressbar()
-                }
-                is State.SuccessWeather -> {
-                    hideProgressbar()
-                    bindWeather(it.weather)
-                }
-                is State.SuccessWeatherList -> {}
-            }
-        }
-        viewModel.getWeatherRequestState(weather)
-
-
+        cityBundle = arguments?.getParcelable(CITY)!!
+        getWeather()
     }
 
-    private fun hideProgressbar() {
-        with(binding) {
-            progressbarDetail.visibility = View.GONE
-            listViewWeather.visibility = View.VISIBLE
+    private fun getWeather() {
+        showProgressbar()
+        context?.let {
+            it.startService(Intent(it, DetailWeatherService::class.java).apply {
+                putExtra(CITY, cityBundle)
+            })
         }
     }
 
-    private fun showProgressbar() {
+    private fun bindWeather(weather: Weather) {
+        hideProgressbar()
         with(binding) {
-            progressbarDetail.visibility = View.VISIBLE
-            listViewWeather.visibility = View.GONE
-        }
-    }
-
-    private fun bindWeather(weather: WeatherDTO) {
-        with(binding) {
-
             condition.text = getString(getLocaleWeather(weather.fact.condition))
-
             weatherIcon.setImageResource(getWeatherConditionIcon(weather.fact.condition))
-
             temperature.text = buildString {
                 append(weather.fact.temp.toString())
                 append("°C")
@@ -90,7 +85,6 @@ class DetailWeatherFragment : Fragment() {
                 append(weather.fact.feelsLike.toString())
                 append("°C")
             }
-
             minMaxTemp.text = buildString {
                 for (i in weather.forecast.parts.indices) {
                     append(getString(getLocaleWeather(weather.forecast.parts[i].partName)))
@@ -111,14 +105,37 @@ class DetailWeatherFragment : Fragment() {
         }
     }
 
-    companion object {
-        const val CITY = "city"
+    private fun showProgressbar() {
+        with(binding) {
+            progressbarDetail.visibility = View.VISIBLE
+            listViewWeather.visibility = View.GONE
+        }
     }
 
+    private fun hideProgressbar() {
+        with(binding) {
+            progressbarDetail.visibility = View.GONE
+            listViewWeather.visibility = View.VISIBLE
+        }
+    }
+
+    companion object {
+        const val CITY = "city"
+        const val WEATHER = "weather"
+        const val LOAD_RESULT = "load result"
+        const val ERROR = "error"
+        const val SUCCESS = "success"
+    }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
 
+    override fun onDestroy() {
+        context?.let {
+            LocalBroadcastManager.getInstance(it).unregisterReceiver(loadWeatherReceiver)
+        }
+        super.onDestroy()
+    }
 }
