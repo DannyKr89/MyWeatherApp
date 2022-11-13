@@ -14,7 +14,6 @@ import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_detail_weather.*
 
 @Suppress("UNUSED_EXPRESSION")
 class WeatherListFragment : Fragment() {

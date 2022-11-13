@@ -8,7 +8,7 @@ fun interface RepositoryWeatherListCities {
     fun getWeatherList(location: CitiesLocation): List<City>
 
 }fun interface RepositoryWeather {
-    fun getWeather(city: City): Weather
+    fun getWeather(city: City, callback: retrofit2.Callback<Weather>)
 }
 fun interface RepositoryNextLoc{
     fun getNextLoc(nextLoc: Boolean):Boolean

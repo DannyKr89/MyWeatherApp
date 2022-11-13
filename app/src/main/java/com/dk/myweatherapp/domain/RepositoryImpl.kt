@@ -5,8 +5,10 @@ import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.getRussianCities
 import com.dk.myweatherapp.model.getWorldCities
 import com.dk.myweatherapp.model.weather_dto.Weather
+import retrofit2.Callback
 
-class RepositoryImpl : RepositoryWeatherListCities, RepositoryNextLoc, RepositoryWeather {
+class RepositoryImpl(private val weatherApi: WeatherApi) : RepositoryWeatherListCities,
+    RepositoryNextLoc, RepositoryWeather {
 
 
     override fun getWeatherList(location: CitiesLocation): List<City> {
@@ -24,8 +26,8 @@ class RepositoryImpl : RepositoryWeatherListCities, RepositoryNextLoc, Repositor
         return !nextLoc
     }
 
-    override fun getWeather(city: City): Weather {
-        return requestWeatherDTO(city)
+    override fun getWeather(city: City, callback: Callback<Weather>) {
+        return weatherApi.getWeatherDetails(city, callback)
     }
 }
 

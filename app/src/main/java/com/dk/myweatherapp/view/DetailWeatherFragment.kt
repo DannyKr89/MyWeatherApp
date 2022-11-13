@@ -1,5 +1,6 @@
 package com.dk.myweatherapp.view
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.domain.getLocaleWeather
-import com.dk.myweatherapp.domain.getWeatherConditionIcon
 import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.weather_dto.Weather
 import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
+import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
+
 
 class DetailWeatherFragment : Fragment() {
     private var _binding: FragmentDetailWeatherBinding? = null
@@ -34,16 +36,14 @@ class DetailWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val weather = arguments?.getParcelable<City>(CITY)!!
-
-
+        val city = arguments?.getParcelable<City>(CITY)!!
 
         viewModel.getWeatherState().observe(viewLifecycleOwner) {
             when (it) {
                 is State.Error -> {
                     hideProgressbar()
                     Toast.makeText(
-                        context, "Ошибка", Toast.LENGTH_LONG
+                        context, it.error.message, Toast.LENGTH_LONG
                     ).show()
                 }
                 State.Loading -> {
@@ -56,9 +56,7 @@ class DetailWeatherFragment : Fragment() {
                 is State.SuccessWeatherList -> {}
             }
         }
-        viewModel.getWeatherRequestState(weather)
-
-
+        viewModel.getWeatherRequestState(city)
     }
 
     private fun hideProgressbar() {
@@ -79,8 +77,11 @@ class DetailWeatherFragment : Fragment() {
         with(binding) {
 
             condition.text = getString(getLocaleWeather(weather.fact.condition))
-
-            weatherIcon.setImageResource(getWeatherConditionIcon(weather.fact.condition))
+            GlideToVectorYou.justLoadImage(
+                activity,
+                Uri.parse("https://yastatic.net/weather/i/icons/funky/dark/${weather.fact.icon}.svg"),
+                weatherIcon
+            )
 
             temperature.text = buildString {
                 append(weather.fact.temp.toString())

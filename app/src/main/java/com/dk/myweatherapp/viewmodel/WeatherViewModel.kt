@@ -3,10 +3,14 @@ package com.dk.myweatherapp.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dk.myweatherapp.domain.RepositoryImpl
+import com.dk.myweatherapp.domain.WeatherApi
 import com.dk.myweatherapp.model.CitiesLocation
 import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.getRussianCities
 import com.dk.myweatherapp.model.weather_dto.Weather
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class WeatherViewModel(
     private var getNextLoc: MutableLiveData<Boolean> = MutableLiveData(),
@@ -19,15 +23,37 @@ class WeatherViewModel(
         getRequestWeather.value = State.Loading
     }
 
-    private val repository = RepositoryImpl()
+    private val repository = RepositoryImpl(WeatherApi())
+
+    private val callback = object : Callback<Weather> {
+        override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
+            val serverResponse: Weather? = response.body()
+            getRequestWeather.postValue(
+                if (response.isSuccessful && serverResponse != null) {
+                    checkResponse(serverResponse)
+                } else {
+                    State.Error(Throwable("Ошибка!"))
+                }
+            )
+        }
+
+        override fun onFailure(call: Call<Weather>, t: Throwable) {
+            getRequestWeather.postValue(State.Error(Throwable(t.message ?: "Ошибка запроса")))
+        }
+
+    }
+
+    private fun checkResponse(serverResponse: Weather): State {
+        return State.SuccessWeather(serverResponse)
+    }
 
 
-    fun getNextLocation():MutableLiveData<Boolean>{
+    fun getNextLocation(): MutableLiveData<Boolean> {
         return getNextLoc
     }
 
 
-    fun changeLocation(nextLoc: Boolean){
+    fun changeLocation(nextLoc: Boolean) {
         getNextLoc.value = repository.getNextLoc(nextLoc)
     }
 
@@ -53,14 +79,7 @@ class WeatherViewModel(
 
     fun getWeatherRequestState(city: City){
         getRequestWeather.value = State.Loading
-        Thread{
-            val getWeather = repository.getWeather(city)
-            if (getWeather.equals(Weather())) {
-                getRequestWeather.postValue(State.Error(Throwable("Ошибка загрузки")))
-            } else{
-                getRequestWeather.postValue(State.SuccessWeather(getWeather))
-            }
-        }.start()
+        repository.getWeather(city, callback)
     }
 
     fun getRussiansCitiesList() {

@@ -26,7 +26,6 @@ enum class WeatherCondition(val condition: String) {
     MORNING("morning"),
     DAY("day"),
     EVENING("evening")
-
 }
 
 fun getLocaleWeather(locale: String): Int {
@@ -55,32 +54,6 @@ fun getLocaleWeather(locale: String): Int {
         WeatherCondition.DAY.condition -> R.string.day
         WeatherCondition.EVENING.condition -> R.string.evening
         else -> {R.string.n_a}
-    }
-
-}
-
-fun getWeatherConditionIcon(condition: String): Int {
-    return when (condition) {
-        WeatherCondition.CLEAR.condition -> R.drawable.clear
-        WeatherCondition.PARTLY_CLOUDY.condition -> R.drawable.partly_cloudy
-        WeatherCondition.CLOUDY.condition -> R.drawable.cloudy
-        WeatherCondition.OVERCAST.condition -> R.drawable.overcast
-        WeatherCondition.DRIZZLE.condition -> R.drawable.drizzle
-        WeatherCondition.LIGHT_RAIN.condition -> R.drawable.light_rain
-        WeatherCondition.RAIN.condition ->R.drawable.rain
-        WeatherCondition.MODERATE_RAIN.condition ->R.drawable.moderate_rain
-        WeatherCondition.HEAVY_RAIN.condition ->R.drawable.heavy_rain
-        WeatherCondition.CONTINUOUS_HEAVY_RAIN.condition -> R.drawable.continuous_heavy_rain
-        WeatherCondition.SHOWERS.condition -> R.drawable.showers
-        WeatherCondition.WET_SNOW.condition -> R.drawable.wet_snow
-        WeatherCondition.LIGHT_SNOW.condition -> R.drawable.light_snow
-        WeatherCondition.SNOW.condition -> R.drawable.snow
-        WeatherCondition.SNOW_SHOWERS.condition -> R.drawable.snow_showers
-        WeatherCondition.HAIL.condition -> R.drawable.hail
-        WeatherCondition.THUNDERSTORM.condition -> R.drawable.thunderstorm
-        WeatherCondition.THUNDERSTORM_WITH_RAIN.condition ->R.drawable.thunderstorm_with_rain
-        WeatherCondition.THUNDERSTORM_WITH_HAIL.condition ->R.drawable.thunderstorm_with_hail
-        else -> {R.drawable.n_a}
     }
 
 }

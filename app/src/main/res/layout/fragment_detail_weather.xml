@@ -55,28 +55,29 @@
 
                 <ImageView
                     android:id="@+id/weatherIcon"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
                     android:layout_gravity="center"
+                    android:src="@drawable/n_a"
                     tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/temperature"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:shadowColor="@color/black"
-                    android:shadowRadius="5"
+                    android:shadowRadius="2"
                     android:textColor="@color/black"
                     android:textSize="60sp"
                     tools:text="32°C" />
 
                 <TextView
                     android:id="@+id/condition"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/margin16"
-                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textSize="@dimen/largeSize32"
                     tools:text="Condition" />
