@@ -4,7 +4,7 @@ import com.dk.myweatherapp.model.CitiesLocation
 import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.getRussianCities
 import com.dk.myweatherapp.model.getWorldCities
-import com.dk.myweatherapp.model.weather_dto.WeatherDTO
+import com.dk.myweatherapp.model.weather_dto.Weather
 
 class RepositoryImpl : RepositoryWeatherListCities, RepositoryNextLoc, RepositoryWeather {
 
@@ -24,7 +24,7 @@ class RepositoryImpl : RepositoryWeatherListCities, RepositoryNextLoc, Repositor
         return !nextLoc
     }
 
-    override fun getWeather(city: City): WeatherDTO {
+    override fun getWeather(city: City): Weather {
         return requestWeatherDTO(city)
     }
 }

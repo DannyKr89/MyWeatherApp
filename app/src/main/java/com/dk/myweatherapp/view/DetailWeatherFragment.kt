@@ -11,7 +11,7 @@ import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
 import com.dk.myweatherapp.domain.getLocaleWeather
 import com.dk.myweatherapp.domain.getWeatherConditionIcon
 import com.dk.myweatherapp.model.City
-import com.dk.myweatherapp.model.weather_dto.WeatherDTO
+import com.dk.myweatherapp.model.weather_dto.Weather
 import com.dk.myweatherapp.viewmodel.State
 import com.dk.myweatherapp.viewmodel.WeatherViewModel
 
@@ -75,7 +75,7 @@ class DetailWeatherFragment : Fragment() {
         }
     }
 
-    private fun bindWeather(weather: WeatherDTO) {
+    private fun bindWeather(weather: Weather) {
         with(binding) {
 
             condition.text = getString(getLocaleWeather(weather.fact.condition))

@@ -2,7 +2,7 @@ package com.dk.myweatherapp.domain
 
 import com.dk.myweatherapp.BuildConfig
 import com.dk.myweatherapp.model.City
-import com.dk.myweatherapp.model.weather_dto.WeatherDTO
+import com.dk.myweatherapp.model.weather_dto.Weather
 import com.google.gson.Gson
 import java.io.InputStreamReader
 import java.net.URL
@@ -10,7 +10,7 @@ import javax.net.ssl.HttpsURLConnection
 
 const val BASE_URL = "https://api.weather.yandex.ru/v2/informers?" //TODO Так правильно?
 
-fun requestWeatherDTO(city: City): WeatherDTO {
+fun requestWeatherDTO(city: City): Weather {
 
 
     val url =
@@ -23,13 +23,13 @@ fun requestWeatherDTO(city: City): WeatherDTO {
     return try {
         val inputStream = connection.inputStream
         val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
-        val weatherDTO = Gson().fromJson(inputStreamReader, WeatherDTO::class.java)
+        val weatherDTO = Gson().fromJson(inputStreamReader, Weather::class.java)
         inputStreamReader.close()
         inputStream.close()
         weatherDTO
     } catch (e:Exception){
         println()
-        WeatherDTO()
+        Weather()
     } finally {
         connection.disconnect()
     }

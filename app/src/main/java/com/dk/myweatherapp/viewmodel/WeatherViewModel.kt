@@ -6,7 +6,7 @@ import com.dk.myweatherapp.domain.RepositoryImpl
 import com.dk.myweatherapp.model.CitiesLocation
 import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.getRussianCities
-import com.dk.myweatherapp.model.weather_dto.WeatherDTO
+import com.dk.myweatherapp.model.weather_dto.Weather
 
 class WeatherViewModel(
     private var getNextLoc: MutableLiveData<Boolean> = MutableLiveData(),
@@ -55,7 +55,7 @@ class WeatherViewModel(
         getRequestWeather.value = State.Loading
         Thread{
             val getWeather = repository.getWeather(city)
-            if (getWeather.equals(WeatherDTO())) {
+            if (getWeather.equals(Weather())) {
                 getRequestWeather.postValue(State.Error(Throwable("Ошибка загрузки")))
             } else{
                 getRequestWeather.postValue(State.SuccessWeather(getWeather))
