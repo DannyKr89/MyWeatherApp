@@ -25,35 +25,40 @@ enum class WeatherCondition(val condition: String) {
     NIGHT("night"),
     MORNING("morning"),
     DAY("day"),
-    EVENING("evening")
+    EVENING("evening");
+
+    companion object {
+        fun getWeatherCondition(condition: String): WeatherCondition {
+            return values().find { condition == it.condition }!!
+        }
+    }
 }
 
-fun getLocaleWeather(locale: String): Int {
-    return when (locale) {
-        WeatherCondition.CLEAR.condition -> R.string.clear
-        WeatherCondition.PARTLY_CLOUDY.condition -> R.string.partly_cloudy
-        WeatherCondition.CLOUDY.condition -> R.string.cloudy
-        WeatherCondition.OVERCAST.condition -> R.string.overcast
-        WeatherCondition.DRIZZLE.condition -> R.string.drizzle
-        WeatherCondition.LIGHT_RAIN.condition -> R.string.light_rain
-        WeatherCondition.RAIN.condition ->R.string.rain
-        WeatherCondition.MODERATE_RAIN.condition ->R.string.moderate_rain
-        WeatherCondition.HEAVY_RAIN.condition ->R.string.heavy_rain
-        WeatherCondition.CONTINUOUS_HEAVY_RAIN.condition -> R.string.continuous_heavy_rain
-        WeatherCondition.SHOWERS.condition -> R.string.showers
-        WeatherCondition.WET_SNOW.condition -> R.string.wet_snow
-        WeatherCondition.LIGHT_SNOW.condition -> R.string.light_snow
-        WeatherCondition.SNOW.condition -> R.string.snow
-        WeatherCondition.SNOW_SHOWERS.condition -> R.string.snow_showers
-        WeatherCondition.HAIL.condition -> R.string.hail
-        WeatherCondition.THUNDERSTORM.condition -> R.string.thunderstorm
-        WeatherCondition.THUNDERSTORM_WITH_RAIN.condition ->R.string.thunderstorm_with_rain
-        WeatherCondition.THUNDERSTORM_WITH_HAIL.condition ->R.string.thunderstorm_with_hail
-        WeatherCondition.NIGHT.condition-> R.string.night
-        WeatherCondition.MORNING.condition -> R.string.morning
-        WeatherCondition.DAY.condition -> R.string.day
-        WeatherCondition.EVENING.condition -> R.string.evening
-        else -> {R.string.n_a}
+fun translateWeatherCondition(weatherCondition: WeatherCondition): Int {
+    return when (weatherCondition) {
+        WeatherCondition.CLEAR -> R.string.clear
+        WeatherCondition.PARTLY_CLOUDY -> R.string.partly_cloudy
+        WeatherCondition.CLOUDY -> R.string.cloudy
+        WeatherCondition.OVERCAST -> R.string.overcast
+        WeatherCondition.DRIZZLE -> R.string.drizzle
+        WeatherCondition.LIGHT_RAIN -> R.string.light_rain
+        WeatherCondition.RAIN ->R.string.rain
+        WeatherCondition.MODERATE_RAIN ->R.string.moderate_rain
+        WeatherCondition.HEAVY_RAIN ->R.string.heavy_rain
+        WeatherCondition.CONTINUOUS_HEAVY_RAIN -> R.string.continuous_heavy_rain
+        WeatherCondition.SHOWERS -> R.string.showers
+        WeatherCondition.WET_SNOW -> R.string.wet_snow
+        WeatherCondition.LIGHT_SNOW -> R.string.light_snow
+        WeatherCondition.SNOW -> R.string.snow
+        WeatherCondition.SNOW_SHOWERS -> R.string.snow_showers
+        WeatherCondition.HAIL -> R.string.hail
+        WeatherCondition.THUNDERSTORM -> R.string.thunderstorm
+        WeatherCondition.THUNDERSTORM_WITH_RAIN ->R.string.thunderstorm_with_rain
+        WeatherCondition.THUNDERSTORM_WITH_HAIL ->R.string.thunderstorm_with_hail
+        WeatherCondition.NIGHT-> R.string.night
+        WeatherCondition.MORNING -> R.string.morning
+        WeatherCondition.DAY -> R.string.day
+        WeatherCondition.EVENING -> R.string.evening
     }
 
 }

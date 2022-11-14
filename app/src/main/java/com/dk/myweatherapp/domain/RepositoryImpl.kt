@@ -1,5 +1,6 @@
 package com.dk.myweatherapp.domain
 
+import com.dk.myweatherapp.BuildConfig
 import com.dk.myweatherapp.model.CitiesLocation
 import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.getRussianCities
@@ -7,7 +8,7 @@ import com.dk.myweatherapp.model.getWorldCities
 import com.dk.myweatherapp.model.weather_dto.Weather
 import retrofit2.Callback
 
-class RepositoryImpl(private val weatherApi: WeatherApi) : RepositoryWeatherListCities,
+class RepositoryImpl() : RepositoryWeatherListCities,
     RepositoryNextLoc, RepositoryWeather {
 
 
@@ -26,8 +27,9 @@ class RepositoryImpl(private val weatherApi: WeatherApi) : RepositoryWeatherList
         return !nextLoc
     }
 
-    override fun getWeather(city: City, callback: Callback<Weather>) {
-        return weatherApi.getWeatherDetails(city, callback)
+    override fun getWeatherFromAPI(city: City, callback: Callback<Weather>) {
+        return RequestApi.create().getDetailWeather(BuildConfig.CONSUMER_KEY, city.lat, city.lon)
+            .enqueue(callback)
     }
 }
 
