@@ -9,7 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
-import com.dk.myweatherapp.domain.getLocaleWeather
+import com.dk.myweatherapp.domain.WeatherCondition
+import com.dk.myweatherapp.domain.translateWeatherCondition
 import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.weather_dto.Weather
 import com.dk.myweatherapp.viewmodel.State
@@ -76,10 +77,12 @@ class DetailWeatherFragment : Fragment() {
     private fun bindWeather(weather: Weather) {
         with(binding) {
 
-            condition.text = getString(getLocaleWeather(weather.fact.condition))
+            condition.text =
+                getString(translateWeatherCondition(WeatherCondition.getWeatherCondition(weather.fact.condition)))
+
             GlideToVectorYou.justLoadImage(
                 activity,
-                Uri.parse("https://yastatic.net/weather/i/icons/funky/dark/${weather.fact.icon}.svg"),
+                Uri.parse(ICON_URL + weather.fact.icon + ".svg"),
                 weatherIcon
             )
 
@@ -94,7 +97,15 @@ class DetailWeatherFragment : Fragment() {
 
             minMaxTemp.text = buildString {
                 for (i in weather.forecast.parts.indices) {
-                    append(getString(getLocaleWeather(weather.forecast.parts[i].partName)))
+                    append(
+                        getString(
+                            translateWeatherCondition(
+                                WeatherCondition.getWeatherCondition(
+                                    weather.forecast.parts[i].partName
+                                )
+                            )
+                        )
+                    )
                     append(" ")
                     append(weather.forecast.parts[i].tempMin)
                     append(" / ")
@@ -114,6 +125,7 @@ class DetailWeatherFragment : Fragment() {
 
     companion object {
         const val CITY = "city"
+        const val ICON_URL = "https://yastatic.net/weather/i/icons/funky/dark/"
     }
 
 

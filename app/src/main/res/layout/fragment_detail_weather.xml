@@ -74,10 +74,10 @@
 
                 <TextView
                     android:id="@+id/condition"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/margin16"
-                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="@dimen/largeSize32"
                     tools:text="Condition" />

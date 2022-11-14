@@ -3,7 +3,6 @@ package com.dk.myweatherapp.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dk.myweatherapp.domain.RepositoryImpl
-import com.dk.myweatherapp.domain.WeatherApi
 import com.dk.myweatherapp.model.CitiesLocation
 import com.dk.myweatherapp.model.City
 import com.dk.myweatherapp.model.getRussianCities
@@ -23,30 +22,7 @@ class WeatherViewModel(
         getRequestWeather.value = State.Loading
     }
 
-    private val repository = RepositoryImpl(WeatherApi())
-
-    private val callback = object : Callback<Weather> {
-        override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
-            val serverResponse: Weather? = response.body()
-            getRequestWeather.postValue(
-                if (response.isSuccessful && serverResponse != null) {
-                    checkResponse(serverResponse)
-                } else {
-                    State.Error(Throwable("Ошибка!"))
-                }
-            )
-        }
-
-        override fun onFailure(call: Call<Weather>, t: Throwable) {
-            getRequestWeather.postValue(State.Error(Throwable(t.message ?: "Ошибка запроса")))
-        }
-
-    }
-
-    private fun checkResponse(serverResponse: Weather): State {
-        return State.SuccessWeather(serverResponse)
-    }
-
+    private val repository = RepositoryImpl()
 
     fun getNextLocation(): MutableLiveData<Boolean> {
         return getNextLoc
@@ -77,9 +53,26 @@ class WeatherViewModel(
         }.start()
     }
 
-    fun getWeatherRequestState(city: City){
+    fun getWeatherRequestState(city: City) {
         getRequestWeather.value = State.Loading
-        repository.getWeather(city, callback)
+
+        repository.getWeatherFromAPI(city, object : Callback<Weather> {
+            override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
+                val detailWeather: Weather? = response.body()
+                getRequestWeather.postValue(
+                    if (response.isSuccessful && detailWeather != null) {
+                        State.SuccessWeather(detailWeather)
+                    } else {
+                        State.Error(Throwable("Ошибка!"))
+                    }
+                )
+            }
+
+            override fun onFailure(call: Call<Weather>, t: Throwable) {
+                getRequestWeather.postValue(State.Error(Throwable(t.message ?: "Ошибка запроса")))
+            }
+
+        })
     }
 
     fun getRussiansCitiesList() {
