@@ -1,15 +1,11 @@
 package com.dk.myweatherapp.domain
 
-import com.dk.myweatherapp.model.CitiesLocation
-import com.dk.myweatherapp.model.Weather
-import com.dk.myweatherapp.model.weather_dto.WeatherDTO
+import com.dk.myweatherapp.data.model.CitiesLocation
+import com.dk.myweatherapp.data.model.City
+import com.dk.myweatherapp.data.model.weather_dto.Weather
+import retrofit2.Callback
 
-fun interface RepositoryWeatherListCities {
-    fun getWeatherList(location: CitiesLocation): List<Weather>
-
-}fun interface RepositoryWeather {
-    fun getWeather(weather: Weather): WeatherDTO
-}
-fun interface RepositoryNextLoc{
-    fun getNextLoc(nextLoc: Boolean):Boolean
+interface Repository {
+    fun getWeatherList(location: CitiesLocation): List<City>
+    fun getWeatherFromAPI(city: City, callback: Callback<Weather>)
 }
