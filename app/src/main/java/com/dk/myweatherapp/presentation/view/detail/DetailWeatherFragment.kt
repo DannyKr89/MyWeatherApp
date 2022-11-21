@@ -1,4 +1,4 @@
-package com.dk.myweatherapp.view
+package com.dk.myweatherapp.presentation.view.detail
 
 import android.net.Uri
 import android.os.Bundle
@@ -8,13 +8,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.dk.myweatherapp.data.CITY
+import com.dk.myweatherapp.data.ICON_URL
+import com.dk.myweatherapp.data.common.WeatherCondition
+import com.dk.myweatherapp.data.common.translateWeatherCondition
+import com.dk.myweatherapp.data.model.City
+import com.dk.myweatherapp.data.model.weather_dto.Weather
 import com.dk.myweatherapp.databinding.FragmentDetailWeatherBinding
-import com.dk.myweatherapp.domain.WeatherCondition
-import com.dk.myweatherapp.domain.translateWeatherCondition
-import com.dk.myweatherapp.model.City
-import com.dk.myweatherapp.model.weather_dto.Weather
-import com.dk.myweatherapp.viewmodel.State
-import com.dk.myweatherapp.viewmodel.WeatherViewModel
+import com.dk.myweatherapp.presentation.viewmodel.State
+import com.dk.myweatherapp.presentation.viewmodel.WeatherDetailViewModel
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 
 
@@ -24,7 +26,7 @@ class DetailWeatherFragment : Fragment() {
         get() {
             return _binding!!
         }
-    private val viewModel: WeatherViewModel by activityViewModels()
+    private val viewModel: WeatherDetailViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -122,12 +124,6 @@ class DetailWeatherFragment : Fragment() {
 
         }
     }
-
-    companion object {
-        const val CITY = "city"
-        const val ICON_URL = "https://yastatic.net/weather/i/icons/funky/dark/"
-    }
-
 
     override fun onDestroyView() {
         _binding = null

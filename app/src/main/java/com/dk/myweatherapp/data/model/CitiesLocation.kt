@@ -1,4 +1,4 @@
-package com.dk.myweatherapp.model
+package com.dk.myweatherapp.data.model
 
 sealed class CitiesLocation {
     object RussianCities : CitiesLocation()

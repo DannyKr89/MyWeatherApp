@@ -1,4 +1,4 @@
-package com.dk.myweatherapp.view
+package com.dk.myweatherapp.presentation.view.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dk.myweatherapp.R
+import com.dk.myweatherapp.data.CITY
+import com.dk.myweatherapp.data.model.City
 import com.dk.myweatherapp.databinding.FragmentWeatherListBinding
-import com.dk.myweatherapp.model.City
-import com.dk.myweatherapp.viewmodel.State
-import com.dk.myweatherapp.viewmodel.WeatherViewModel
+import com.dk.myweatherapp.presentation.viewmodel.State
+import com.dk.myweatherapp.presentation.viewmodel.WeatherListViewModel
 import com.google.android.material.snackbar.Snackbar
 
 @Suppress("UNUSED_EXPRESSION")
@@ -22,7 +23,7 @@ class WeatherListFragment : Fragment() {
         get() {
             return _binding!!
         }
-    private val viewModel: WeatherViewModel by activityViewModels()
+    private val viewModel: WeatherListViewModel by activityViewModels()
     private lateinit var adapter: WeatherListAdapter
 
 
@@ -86,7 +87,7 @@ class WeatherListFragment : Fragment() {
                     findNavController().navigate(R.id.action_weatherListFragment_to_detailWeatherFragment,
                         Bundle().apply {
                             putParcelable(
-                                DetailWeatherFragment.CITY, city
+                                CITY, city
                             )
                             putString("cityName", city.name)
                         })
@@ -132,7 +133,7 @@ class WeatherListFragment : Fragment() {
                 findNavController().navigate(R.id.action_weatherListFragment_to_detailWeatherFragment,
                     Bundle().apply {
                         putParcelable(
-                            DetailWeatherFragment.CITY, city
+                            CITY, city
                         )
                         putString("cityName", city.name)
                     })

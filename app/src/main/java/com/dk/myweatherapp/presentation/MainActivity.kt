@@ -1,10 +1,11 @@
-package com.dk.myweatherapp
+package com.dk.myweatherapp.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.dk.myweatherapp.R
 import com.dk.myweatherapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

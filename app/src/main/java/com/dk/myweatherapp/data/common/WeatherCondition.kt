@@ -1,4 +1,4 @@
-package com.dk.myweatherapp.domain
+package com.dk.myweatherapp.data.common
 
 import com.dk.myweatherapp.R
 

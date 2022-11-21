@@ -1,11 +1,11 @@
-package com.dk.myweatherapp.view
+package com.dk.myweatherapp.presentation.view.list
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.dk.myweatherapp.data.model.City
 import com.dk.myweatherapp.databinding.ItemCityNameBinding
-import com.dk.myweatherapp.model.City
 
 class WeatherListAdapter(
     private var onItemViewClick: WeatherListFragment.OnItemViewClick?) :

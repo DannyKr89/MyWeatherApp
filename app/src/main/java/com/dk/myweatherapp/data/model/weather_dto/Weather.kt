@@ -1,7 +1,7 @@
-package com.dk.myweatherapp.model.weather_dto
+package com.dk.myweatherapp.data.model.weather_dto
 
 
-import com.dk.myweatherapp.model.City
+import com.dk.myweatherapp.data.model.City
 import com.google.gson.annotations.SerializedName
 
 data class Weather(
