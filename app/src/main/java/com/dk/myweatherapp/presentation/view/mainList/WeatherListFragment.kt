@@ -1,4 +1,4 @@
-package com.dk.myweatherapp.presentation.view.list
+package com.dk.myweatherapp.presentation.view.mainList
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -19,10 +19,7 @@ import com.dk.myweatherapp.presentation.viewmodel.WeatherListViewModel
 
 class WeatherListFragment : Fragment() {
     private var _binding: FragmentWeatherListBinding? = null
-    private val binding: FragmentWeatherListBinding
-        get() {
-            return _binding!!
-        }
+    private val binding get() = _binding!!
     private val viewModel: WeatherListViewModel by activityViewModels()
     private lateinit var adapter: WeatherListAdapter
     private lateinit var sharedPref: SharedPreferences

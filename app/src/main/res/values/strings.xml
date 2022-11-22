@@ -35,4 +35,6 @@
     <string name="longitude">Долгота</string>
     <string name="latitude">Широта</string>
     <string name="show">Показать</string>
+    <string name="main">Главная</string>
+    <string name="history">История</string>
 </resources>

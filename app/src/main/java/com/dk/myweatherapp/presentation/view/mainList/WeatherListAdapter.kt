@@ -1,4 +1,4 @@
-package com.dk.myweatherapp.presentation.view.list
+package com.dk.myweatherapp.presentation.view.mainList
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
