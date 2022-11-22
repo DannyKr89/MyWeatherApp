@@ -56,7 +56,6 @@ class DetailWeatherFragment : Fragment() {
                     hideProgressbar()
                     bindWeather(it.weather)
                 }
-                is State.SuccessWeatherList -> {}
             }
         }
         viewModel.getWeatherRequestState(city)
