@@ -5,23 +5,26 @@ import androidx.lifecycle.ViewModel
 import com.dk.myweatherapp.App.Companion.getHistoryWeatherDB
 import com.dk.myweatherapp.data.model.City
 import com.dk.myweatherapp.data.model.weather_dto.Weather
+import com.dk.myweatherapp.data.repository.GetDetailRepositoryImpl
 import com.dk.myweatherapp.data.repository.LocalRepositoryImpl
-import com.dk.myweatherapp.data.repository.RepositoryImpl
-import com.dk.myweatherapp.domain.LocalRepository
-import com.dk.myweatherapp.domain.WeatherInteractor
+import com.dk.myweatherapp.domain.GetDetailInteractor
+import com.dk.myweatherapp.domain.GetDetailRepository
+import com.dk.myweatherapp.domain.GetLocalDBInteractor
+import com.dk.myweatherapp.domain.GetLocalDBRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class WeatherDetailViewModel(
     private var getRequestWeather: MutableLiveData<State> = MutableLiveData(),
-    private val repository: RepositoryImpl = RepositoryImpl(),
-    private val weatherInteractor: WeatherInteractor = WeatherInteractor(repository),
-    private val localRepository: LocalRepository = LocalRepositoryImpl(getHistoryWeatherDB())
+    private val repository: GetDetailRepository = GetDetailRepositoryImpl(),
+    private val localRepository: GetLocalDBRepository = LocalRepositoryImpl(getHistoryWeatherDB()),
+    private val getDetailInteractor: GetDetailInteractor = GetDetailInteractor(repository),
+    private val getLocalDBInteractor: GetLocalDBInteractor = GetLocalDBInteractor(localRepository)
 ) : ViewModel() {
 
     private fun saveWeatherToDB(weather: Weather) {
-        localRepository.saveToDB(weather)
+        getLocalDBInteractor.saveToDB(weather)
     }
 
 
@@ -30,12 +33,12 @@ class WeatherDetailViewModel(
     fun getWeatherRequestState(city: City) {
         getRequestWeather.value = State.Loading
 
-        weatherInteractor.getDetail(city, object : Callback<Weather> {
+        getDetailInteractor.getDetail(city, object : Callback<Weather> {
             override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
                 val detailWeather: Weather? = response.body().apply {
                     this?.city = city
                 }
-                if (response.isSuccessful && detailWeather != null) {
+                if (detailWeather != null) {
                     getRequestWeather.postValue(State.SuccessWeather(detailWeather))
                     Thread{
                         saveWeatherToDB(detailWeather)

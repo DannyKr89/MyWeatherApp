@@ -36,7 +36,7 @@ class HistoryListFragment : Fragment() {
 
     private fun renderList(list: List<HistoryWeather>?) {
         adapter = HistoryListAdapter()
-        adapter!!.setList(list)
+        adapter!!.setList(list?.reversed())
         binding.rvHistoryList.adapter = adapter
 
     }

@@ -1,23 +1,17 @@
 package com.dk.myweatherapp.data.repository
 
-import com.dk.myweatherapp.data.ICON_URL
+import com.dk.myweatherapp.data.common.convertWeatherToHistoryWeather
 import com.dk.myweatherapp.data.model.weather_dto.Weather
 import com.dk.myweatherapp.data.room.HistoryDao
 import com.dk.myweatherapp.data.room.HistoryWeather
-import com.dk.myweatherapp.domain.LocalRepository
+import com.dk.myweatherapp.domain.GetLocalDBRepository
 
-class LocalRepositoryImpl(private val localDataSource: HistoryDao) : LocalRepository {
+class LocalRepositoryImpl(private val localDBSource: HistoryDao) : GetLocalDBRepository {
     override fun getAllHistory(): List<HistoryWeather> {
-        return localDataSource.all()
+        return localDBSource.all()
     }
 
     override fun saveToDB(weather: Weather) {
-        localDataSource.insertWeather(convertWeatherToHistoryWeather(weather))
-    }
-
-    private fun convertWeatherToHistoryWeather(weather: Weather): HistoryWeather {
-        return HistoryWeather(
-            0, weather.city.name, weather.fact.temp, weather.fact.condition, ICON_URL + weather.fact.icon + ".svg"
-        )
+        localDBSource.insertWeather(convertWeatherToHistoryWeather(weather))
     }
 }
