@@ -1,10 +1,9 @@
 package com.dk.myweatherapp.presentation.view.historyList
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.dk.myweatherapp.data.common.WeatherCondition
 import com.dk.myweatherapp.data.common.translateWeatherCondition
@@ -12,18 +11,7 @@ import com.dk.myweatherapp.data.room.HistoryWeather
 import com.dk.myweatherapp.databinding.ItemHistoryCityBinding
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 
-class HistoryListAdapter() : RecyclerView.Adapter<HistoryListAdapter.HistoryListViewHolder>() {
-
-    private var historyList = listOf<HistoryWeather>()
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setList(list: List<HistoryWeather>?) {
-        if (list != null) {
-            historyList = list
-        }
-        notifyDataSetChanged()
-    }
-
+class HistoryListAdapter() : ListAdapter<HistoryWeather,HistoryListAdapter.HistoryListViewHolder>(HistoryWeatherCallback()) {
 
     inner class HistoryListViewHolder(val binding: ItemHistoryCityBinding) :
         ViewHolder(binding.root) {
@@ -51,9 +39,7 @@ class HistoryListAdapter() : RecyclerView.Adapter<HistoryListAdapter.HistoryList
     }
 
     override fun onBindViewHolder(holder: HistoryListViewHolder, position: Int) {
-        holder.bind(historyList[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount() = historyList.size
 
 }

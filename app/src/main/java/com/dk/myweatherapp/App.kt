@@ -2,6 +2,7 @@ package com.dk.myweatherapp
 
 import android.app.Application
 import androidx.room.Room
+import com.dk.myweatherapp.data.DB_NAME
 import com.dk.myweatherapp.data.room.HistoryDao
 import com.dk.myweatherapp.data.room.HistoryWeatherDB
 
@@ -15,7 +16,6 @@ class App : Application() {
     companion object {
         private var appInstance: App? = null
         private var db: HistoryWeatherDB? = null
-        private const val DB_NAME = "History.db"
 
         fun getHistoryWeatherDB(): HistoryDao {
             if (db == null) {

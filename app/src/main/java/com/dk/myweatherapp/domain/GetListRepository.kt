@@ -6,3 +6,4 @@ import com.dk.myweatherapp.data.model.City
 interface GetListRepository {
     fun getWeatherList(location: CitiesLocation): List<City>
 }
+

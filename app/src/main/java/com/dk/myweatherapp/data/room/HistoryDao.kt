@@ -1,11 +1,12 @@
 package com.dk.myweatherapp.data.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface HistoryDao {
     @Query("SELECT * FROM HistoryWeather")
-    fun all(): List<HistoryWeather>
+    fun all(): LiveData<List<HistoryWeather>>
 
     @Query("SELECT * FROM HistoryWeather WHERE city LIKE :city")
     fun getCity(city: String): List<HistoryWeather>

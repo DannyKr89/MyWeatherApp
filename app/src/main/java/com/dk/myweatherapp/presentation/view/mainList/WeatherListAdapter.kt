@@ -1,27 +1,16 @@
 package com.dk.myweatherapp.presentation.view.mainList
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dk.myweatherapp.data.model.City
 import com.dk.myweatherapp.databinding.ItemCityNameBinding
 
-class WeatherListAdapter(
-    private var onItemViewClick: WeatherListFragment.OnItemViewClick?) :
-    RecyclerView.Adapter<WeatherListAdapter.WeatherViewHolder>() {
+class WeatherListAdapter() :
+    ListAdapter<City, WeatherListAdapter.WeatherViewHolder>(CityListCallback()) {
 
-    private var weatherList = listOf<City>()
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setWeatherList(list:List<City>){
-        weatherList = list
-        notifyDataSetChanged()
-    }
-
-    fun removeListener(){
-        onItemViewClick = null
-    }
+    var listener: ((City) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val binding =
@@ -30,11 +19,7 @@ class WeatherListAdapter(
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        holder.bind(weatherList[position])
-    }
-
-    override fun getItemCount(): Int {
-        return weatherList.size
+        holder.bind(getItem(position))
     }
 
     inner class WeatherViewHolder(binding: ItemCityNameBinding) :
@@ -43,7 +28,7 @@ class WeatherListAdapter(
             with(ItemCityNameBinding.bind(itemView.rootView)) {
                 itemCityName.text = city.name
                 itemCityName.setOnClickListener {
-                    onItemViewClick?.onWeatherClick(city)
+                    listener?.invoke(city)
                 }
             }
 

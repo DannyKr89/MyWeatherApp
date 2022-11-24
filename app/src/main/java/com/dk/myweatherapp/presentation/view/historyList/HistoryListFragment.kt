@@ -15,7 +15,7 @@ class HistoryListFragment : Fragment() {
     private var _binding: FragmentHistoryBinding? = null
     private val viewModel: HistoryListViewModel by activityViewModels()
     private val binding get() = _binding!!
-    private var adapter: HistoryListAdapter? = null
+    private var adapter = HistoryListAdapter()
 
 
     override fun onCreateView(
@@ -27,22 +27,18 @@ class HistoryListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.historyListLiveData.observe(viewLifecycleOwner) {
+        binding.rvHistoryList.adapter = adapter
+        viewModel.getAllHistory().observe(viewLifecycleOwner) {
             renderList(it)
         }
         viewModel.getAllHistory()
-
     }
 
-    private fun renderList(list: List<HistoryWeather>?) {
-        adapter = HistoryListAdapter()
-        adapter!!.setList(list?.reversed())
-        binding.rvHistoryList.adapter = adapter
-
+    private fun renderList(list: List<HistoryWeather>) {
+        adapter.submitList(list.reversed())
     }
 
     override fun onDestroyView() {
-        adapter = null
         _binding = null
         super.onDestroyView()
     }

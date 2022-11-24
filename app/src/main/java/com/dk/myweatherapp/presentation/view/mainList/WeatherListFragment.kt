@@ -21,7 +21,7 @@ class WeatherListFragment : Fragment() {
     private var _binding: FragmentWeatherListBinding? = null
     private val binding get() = _binding!!
     private val viewModel: WeatherListViewModel by activityViewModels()
-    private lateinit var adapter: WeatherListAdapter
+    private val adapter = WeatherListAdapter()
     private lateinit var sharedPref: SharedPreferences
     private var isDataSetWorld = true
 
@@ -51,7 +51,6 @@ class WeatherListFragment : Fragment() {
         viewModel.getWeatherListState().observe(viewLifecycleOwner) {
             renderList(it)
         }
-
 
         with(binding) {
 
@@ -96,30 +95,21 @@ class WeatherListFragment : Fragment() {
     }
 
     private fun renderList(weathers: List<City>) {
-        adapter = WeatherListAdapter(object : OnItemViewClick {
-            override fun onWeatherClick(city: City) {
-                findNavController().navigate(
-                    R.id.action_weatherListFragment_to_detailWeatherFragment,
-                    Bundle().apply {
-                        putParcelable(
-                            CITY, city
-                        )
-                        putString("cityName", city.name)
-                    })
-            }
-        }).also {
-            it.setWeatherList(weathers)
+        adapter.submitList(weathers)
+        adapter.listener = {
+            findNavController().navigate(R.id.action_weatherListFragment_to_detailWeatherFragment,
+                Bundle().apply {
+                    putParcelable(
+                        CITY, it
+                    )
+                    putString("cityName", it.name)
+                })
         }
         binding.rvWeatherList.adapter = adapter
     }
 
-    interface OnItemViewClick {
-        fun onWeatherClick(city: City)
-    }
-
     override fun onDestroyView() {
         _binding = null
-        adapter.removeListener()
         super.onDestroyView()
     }
 }
