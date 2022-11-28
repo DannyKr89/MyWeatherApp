@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.dk.myweatherapp.data.common.WeatherCondition
 import com.dk.myweatherapp.data.common.translateWeatherCondition
+import com.dk.myweatherapp.data.repository.LocalRepositoryImpl
 import com.dk.myweatherapp.data.room.HistoryWeather
 import com.dk.myweatherapp.databinding.ItemHistoryCityBinding
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou

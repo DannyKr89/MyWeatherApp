@@ -14,9 +14,6 @@ interface HistoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertWeather(weather: HistoryWeather)
 
-    @Update
-    fun update(weather: HistoryWeather)
-
     @Delete
     fun deleteWeather(weather: HistoryWeather)
 }

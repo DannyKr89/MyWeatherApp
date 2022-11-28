@@ -16,4 +16,8 @@ class HistoryListViewModel(
     fun getAllHistory(): LiveData<List<HistoryWeather>> {
         return getLocalDBInteractor.getAllHistory()
     }
+
+    fun deleteHistoryItem(weather:HistoryWeather){
+        getLocalDBInteractor.deleteFromDB(weather)
+    }
 }

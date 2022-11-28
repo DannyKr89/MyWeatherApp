@@ -7,4 +7,5 @@ import com.dk.myweatherapp.data.room.HistoryWeather
 interface GetLocalDBRepository {
     fun getAllHistory(): LiveData<List<HistoryWeather>>
     fun saveToDB(weather: Weather)
+    fun deleteFromDB(weather: HistoryWeather)
 }

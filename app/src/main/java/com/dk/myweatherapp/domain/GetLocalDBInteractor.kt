@@ -12,4 +12,8 @@ class GetLocalDBInteractor(private val getLocalDBRepository: GetLocalDBRepositor
     fun saveToDB(weather: Weather) {
         getLocalDBRepository.saveToDB(weather)
     }
+
+    fun deleteFromDB(weather: HistoryWeather){
+        getLocalDBRepository.deleteFromDB(weather)
+    }
 }

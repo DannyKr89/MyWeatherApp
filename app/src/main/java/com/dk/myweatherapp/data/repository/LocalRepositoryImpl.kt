@@ -15,4 +15,8 @@ class LocalRepositoryImpl(private val localDBSource: HistoryDao) : GetLocalDBRep
     override fun saveToDB(weather: Weather) {
         localDBSource.insertWeather(convertWeatherToHistoryWeather(weather))
     }
+
+    override fun deleteFromDB(weather: HistoryWeather) {
+        localDBSource.deleteWeather(weather)
+    }
 }

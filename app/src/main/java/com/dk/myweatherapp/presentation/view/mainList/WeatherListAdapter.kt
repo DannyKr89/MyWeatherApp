@@ -31,9 +31,6 @@ class WeatherListAdapter() :
                     listener?.invoke(city)
                 }
             }
-
         }
     }
-
-
 }
