@@ -11,7 +11,7 @@ data class Fact(
     @SerializedName("humidity")
     val humidity: Int = 0,
     @SerializedName("icon")
-    val icon: String = "", // TODO Добавить картинки
+    val icon: String = "",
     @SerializedName("temp")
     val temp: Int = 0,
     @SerializedName("wind_speed")

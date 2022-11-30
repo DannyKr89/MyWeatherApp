@@ -22,10 +22,7 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 
 class DetailWeatherFragment : Fragment() {
     private var _binding: FragmentDetailWeatherBinding? = null
-    private val binding: FragmentDetailWeatherBinding
-        get() {
-            return _binding!!
-        }
+    private val binding get() = _binding!!
     private val viewModel: WeatherDetailViewModel by activityViewModels()
 
 
@@ -56,7 +53,6 @@ class DetailWeatherFragment : Fragment() {
                     hideProgressbar()
                     bindWeather(it.weather)
                 }
-                is State.SuccessWeatherList -> {}
             }
         }
         viewModel.getWeatherRequestState(city)
