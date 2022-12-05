@@ -30,5 +30,10 @@
         android:name="com.dk.myweatherapp.presentation.view.historyList.HistoryListFragment"
         android:label="История запросов"
         tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.dk.myweatherapp.ContactsFragment"
+        android:label="Контакты"
+        tools:layout="@layout/fragment_contacts" />
 
 </navigation>
