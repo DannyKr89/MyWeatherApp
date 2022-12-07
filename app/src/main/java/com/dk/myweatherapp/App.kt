@@ -19,22 +19,13 @@ class App : Application() {
 
         fun getHistoryWeatherDB(): HistoryDao {
             if (db == null) {
-                synchronized(HistoryWeatherDB::class.java) {
-                    if (db == null) {
-                        if (appInstance == null){
-                            throw java.lang.IllegalStateException("App is null while creating DB")
-                        }
-
-                        db = Room.databaseBuilder(
+                db = Room.databaseBuilder(
                             appInstance!!.applicationContext,
                             HistoryWeatherDB::class.java,
                             DB_NAME
                         )
-                            .allowMainThreadQueries()
                             .build()
                     }
-                }
-            }
             return db!!.historyDao()
         }
     }
