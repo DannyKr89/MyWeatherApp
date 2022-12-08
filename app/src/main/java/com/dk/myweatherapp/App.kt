@@ -30,6 +30,7 @@ class App : Application() {
                             HistoryWeatherDB::class.java,
                             DB_NAME
                         )
+                            .allowMainThreadQueries()
                             .build()
                     }
                 }
