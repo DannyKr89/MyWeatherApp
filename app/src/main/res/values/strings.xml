@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Погода</string>
     <string name="loading_error">Ошибка загрузки</string>
-    <string name="repeat">Повторить?</string>
+    <string name="input_lat_long">Введите широту и долготу</string>
 
     <string name="detail_feels_like">Чувствуется как:</string>
     <string name="detail_humidity">Влажность:</string>

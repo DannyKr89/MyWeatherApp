@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -13,7 +12,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,8 +20,8 @@ import com.dk.myweatherapp.R
 import com.dk.myweatherapp.data.*
 import com.dk.myweatherapp.data.model.City
 import com.dk.myweatherapp.databinding.FragmentWeatherListBinding
+import com.dk.myweatherapp.presentation.viewmodel.AddressState
 import com.dk.myweatherapp.presentation.viewmodel.WeatherListViewModel
-import java.io.IOException
 
 
 class WeatherListFragment : Fragment() {
@@ -61,6 +59,23 @@ class WeatherListFragment : Fragment() {
             renderList(it)
         }
 
+        viewModel.getSearchLocationState().observe(viewLifecycleOwner){
+            when (it){
+                is AddressState.Error -> {
+                    binding.progressbarList.visibility = View.GONE
+                    showDialog("", it.error)
+                }
+                AddressState.Loading -> {
+                    binding.progressbarList.visibility = View.VISIBLE
+                }
+                is AddressState.Success -> {
+                    binding.progressbarList.visibility = View.GONE
+                    showAddressDialog(it.title,it.location)
+                }
+                AddressState.Default -> {}
+            }
+        }
+
         with(binding) {
 
             fabChangeList.setOnClickListener {
@@ -74,38 +89,18 @@ class WeatherListFragment : Fragment() {
 
             btnSearch.setOnClickListener {
                 if (latitude.text.isNotEmpty() && longitude.text.isNotEmpty()) {
-                    val geocoder = Geocoder(requireContext())
-                    val lat = latitude.text.toString().toDouble()
-                    val lon = longitude.text.toString().toDouble()
-                    val location = Location("me").apply {
-                        latitude = lat
-                        longitude = lon
-                    }
-                    Thread {
-                        val address = geocoder.getFromLocation(lat, lon, 1)
-                        btnSearch.post {
-                            if (!address.isNullOrEmpty()) {
-                                showAddressDialog(address[0].getAddressLine(0), location)
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Неверный адресс",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }.start()
-
+                    viewModel.getSearchRequest(
+                        latitude.text.toString().toDouble(),
+                        longitude.text.toString().toDouble(),
+                        requireContext()
+                    )
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Введите широту и долготу",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showDialog(getString(R.string.loading_error),getString(R.string.input_lat_long))
                 }
             }
         }
     }
+
 
     private fun getDetails(city: City) {
         findNavController().navigate(
@@ -114,7 +109,7 @@ class WeatherListFragment : Fragment() {
                 putParcelable(
                     CITY, city
                 )
-                putString("cityName", city.name)
+                putString(CITY_NAME, city.name)
             })
     }
 
@@ -150,7 +145,6 @@ class WeatherListFragment : Fragment() {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun getLocation() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -203,21 +197,8 @@ class WeatherListFragment : Fragment() {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun getAddressAsync(location: Location) {
-        val geoCoder = Geocoder(requireContext())
-        Thread {
-            try {
-                val addresses = geoCoder.getFromLocation(location.latitude, location.longitude, 1)
-                binding.fabCurrentLocation.post {
-                    if (addresses != null && addresses.isNotEmpty()) {
-                            showAddressDialog(addresses[0].getAddressLine(0), location)
-                        }
-                    }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }.start()
+        viewModel.getSearchRequest(location.latitude,location.latitude,requireContext())
     }
 
     private fun showAddressDialog(address: String, location: Location) {
@@ -229,11 +210,13 @@ class WeatherListFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.dialog_address_title))
             .setMessage(address)
-            .setPositiveButton(getString(R.string.dialog_address_get_weather)) { _, _ ->
+            .setPositiveButton(getString(R.string.dialog_address_get_weather)) { dialog, _ ->
                 getDetails(city)
+                viewModel.setSearchLocationDefaultState()
             }
             .setNegativeButton(getString(R.string.dialog_button_close)) { dialog, _ ->
                 dialog.dismiss()
+                viewModel.setSearchLocationDefaultState()
             }
             .create()
             .show()
