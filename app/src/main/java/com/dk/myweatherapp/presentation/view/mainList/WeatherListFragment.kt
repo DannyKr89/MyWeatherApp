@@ -56,7 +56,6 @@ class WeatherListFragment : Fragment() {
         changeList()
     }
 
-    @Suppress("DEPRECATION")
     private fun init() {
         viewModel.getWeatherListState().observe(viewLifecycleOwner) {
             renderList(it)
@@ -140,11 +139,11 @@ class WeatherListFragment : Fragment() {
     private fun checkPermission() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             getLocation()
-        } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             showRationaleDialog()
         } else {
             requestPermission()
@@ -155,7 +154,7 @@ class WeatherListFragment : Fragment() {
     private fun getLocation() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             val locationManager =
@@ -254,9 +253,9 @@ class WeatherListFragment : Fragment() {
             .show()
     }
 
-    @Suppress("DEPRECATION")
     private fun requestPermission() {
-        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION)
+        @Suppress("DEPRECATION")
+        requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION)
     }
 
     @Deprecated("Deprecated in Java")

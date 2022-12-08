@@ -18,6 +18,8 @@ class HistoryListViewModel(
     }
 
     fun deleteHistoryItem(weather:HistoryWeather){
-        getLocalDBInteractor.deleteFromDB(weather)
+        Thread{
+            getLocalDBInteractor.deleteFromDB(weather)
+        }
     }
 }
