@@ -2,6 +2,8 @@
     <string name="app_name">Погода</string>
     <string name="loading_error">Ошибка загрузки</string>
     <string name="input_lat_long">Введите широту и долготу</string>
+    <string name="bad_address">Неверный адресс</string>
+    <string name="bad_coords">Неверные координаты</string>
 
     <string name="detail_feels_like">Чувствуется как:</string>
     <string name="detail_humidity">Влажность:</string>

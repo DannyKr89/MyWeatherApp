@@ -5,8 +5,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +21,7 @@ import com.dk.myweatherapp.data.*
 import com.dk.myweatherapp.data.model.City
 import com.dk.myweatherapp.databinding.FragmentWeatherListBinding
 import com.dk.myweatherapp.presentation.viewmodel.AddressState
+import com.dk.myweatherapp.presentation.viewmodel.LocationState
 import com.dk.myweatherapp.presentation.viewmodel.WeatherListViewModel
 
 
@@ -29,8 +30,9 @@ class WeatherListFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: WeatherListViewModel by activityViewModels()
     private val adapter = WeatherListAdapter()
-    private lateinit var sharedPref: SharedPreferences
     private var isDataSetWorld = true
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var geocoder: Geocoder
 
 
     override fun onCreateView(
@@ -55,6 +57,8 @@ class WeatherListFragment : Fragment() {
     }
 
     private fun init() {
+        geocoder = Geocoder(requireContext())
+
         viewModel.getWeatherListState().observe(viewLifecycleOwner) {
             renderList(it)
         }
@@ -63,7 +67,7 @@ class WeatherListFragment : Fragment() {
             when (it){
                 is AddressState.Error -> {
                     binding.progressbarList.visibility = View.GONE
-                    showDialog("", it.error)
+                    showDialog(getString(it.title), getString(it.message))
                 }
                 AddressState.Loading -> {
                     binding.progressbarList.visibility = View.VISIBLE
@@ -72,7 +76,33 @@ class WeatherListFragment : Fragment() {
                     binding.progressbarList.visibility = View.GONE
                     showAddressDialog(it.title,it.location)
                 }
-                AddressState.Default -> {}
+                AddressState.Default -> {
+                    binding.progressbarList.visibility = View.GONE
+                }
+            }
+        }
+
+        viewModel.getMyLocationState().observe(viewLifecycleOwner){
+            when (it){
+                is LocationState.Error -> {
+                    binding.progressbarList.visibility = View.GONE
+                    showDialog(getString(it.title), getString(it.message))
+                }
+                LocationState.Loading -> {
+                    binding.progressbarList.visibility = View.VISIBLE
+                }
+                is LocationState.Success -> {
+                    binding.progressbarList.visibility = View.GONE
+                    if (it.message == null){
+                        getAddressAsync(it.location)
+                    } else {
+                        getAddressAsync(it.location)
+                        showDialog(getString(R.string.dialog_title_gps_turned_off), getString(it.message))
+                    }
+                }
+                LocationState.Default -> {
+                    binding.progressbarList.visibility = View.GONE
+                }
             }
         }
 
@@ -92,7 +122,7 @@ class WeatherListFragment : Fragment() {
                     viewModel.getSearchRequest(
                         latitude.text.toString().toDouble(),
                         longitude.text.toString().toDouble(),
-                        requireContext()
+                        geocoder
                     )
                 } else {
                     showDialog(getString(R.string.loading_error),getString(R.string.input_lat_long))
@@ -132,11 +162,7 @@ class WeatherListFragment : Fragment() {
     }
 
     private fun checkPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (isGranted()) {
             getLocation()
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             showRationaleDialog()
@@ -146,77 +172,39 @@ class WeatherListFragment : Fragment() {
     }
 
     private fun getLocation() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            val locationManager =
-                requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                val provider = locationManager.getProvider(LocationManager.GPS_PROVIDER)
-                provider?.let {
-                    locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,
-                        REFRESH_PERIOD,
-                        MINIMAL_DISTANCE,
-                        object : LocationListener {
-                            override fun onLocationChanged(location: Location) {
-                                getAddressAsync(location)
-                            }
-                            override fun onProviderEnabled(provider: String) {}
-
-                            override fun onProviderDisabled(provider: String) {}
-
-                            @Deprecated("Deprecated in Java")
-                            override fun onStatusChanged(
-                                provider: String?,
-                                status: Int,
-                                extras: Bundle?
-                            ) {}
-                        }
-                    )
-                }
-            } else {
-                val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                if (location == null) {
-                    showDialog(
-                        getString(R.string.dialog_title_gps_turned_off),
-                        getString(R.string.dialog_message_last_location_unknown)
-                    )
-                } else {
-                    getAddressAsync(location)
-                    showDialog(
-                        getString(R.string.dialog_title_gps_turned_off),
-                        getString(R.string.dialog_message_last_known_location)
-                    )
-                }
+        if (isGranted()) {
+            context?.let {
+                val locationManager =
+                    it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                viewModel.getMyLocationRequest(locationManager)
             }
+
         } else {
             showRationaleDialog()
         }
     }
 
+    private fun isGranted() = ContextCompat.checkSelfPermission(
+        requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+
     private fun getAddressAsync(location: Location) {
-        viewModel.getSearchRequest(location.latitude,location.latitude,requireContext())
+        viewModel.getSearchRequest(location.latitude, location.longitude, geocoder)
     }
 
     private fun showAddressDialog(address: String, location: Location) {
-        val city = City(
-            address,
-            location.latitude,
-            location.longitude
-        )
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.dialog_address_title))
             .setMessage(address)
             .setPositiveButton(getString(R.string.dialog_address_get_weather)) { dialog, _ ->
-                getDetails(city)
+                getDetails(City(address, location.latitude, location.longitude))
+                viewModel.setMyLocationStateDefault()
                 viewModel.setSearchLocationDefaultState()
             }
             .setNegativeButton(getString(R.string.dialog_button_close)) { dialog, _ ->
-                dialog.dismiss()
+                viewModel.setMyLocationStateDefault()
                 viewModel.setSearchLocationDefaultState()
+                dialog.dismiss()
             }
             .create()
             .show()
@@ -238,7 +226,7 @@ class WeatherListFragment : Fragment() {
 
     private fun requestPermission() {
         @Suppress("DEPRECATION")
-        requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION)
+        requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION ), REQUEST_LOCATION)
     }
 
     @Deprecated("Deprecated in Java")
@@ -276,6 +264,8 @@ class WeatherListFragment : Fragment() {
             .setTitle(title)
             .setMessage(message)
             .setNegativeButton(getString(R.string.dialog_button_close)) { dialog, _ ->
+                viewModel.setMyLocationStateDefault()
+                viewModel.setSearchLocationDefaultState()
                 dialog.dismiss()
             }
             .create()
